@@ -8,8 +8,10 @@ class VshGeoip < Formula
   head "https://github.com/maxmind/geoip-api-c.git", branch: "main"
 
   bottle do
-    root_url "https://ghcr.io/v2/dittertp/php"
-    sha256 cellar: :any, arm64_tahoe: "aa8ca1237358cf2df8bb88ac4740d10b77de15ac8e3dae40f09cb0a1a8267c44"
+    root_url "https://ghcr.io/v2/valet-sh/php"
+    sha256 cellar: :any,                 arm64_tahoe:  "0a554d6d4c197408fc8277fd276ed59183e037896f308939f2155f2807d49a45"
+    sha256 cellar: :any,                 sequoia:      "a7da3793ae72d2527e140791ff3edfbd53015d2e40a18be9b5f098dc0de4a630"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "bb7b16a8c7e7b7ca574cf5c7cf733e15e45efc1e9feff0d70f3bd707f785ac4b"
   end
 
   resource "database" do
