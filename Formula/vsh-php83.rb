@@ -2,7 +2,6 @@ class VshPhp83 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
   url "https://www.php.net/distributions/php-8.3.25.tar.xz"
-  mirror "https://fossies.org/linux/www/php-8.3.25.tar.xz"
   sha256 "187b61bb795015adacf53f8c55b44414a63777ec19a776b75fb88614506c0d37"
   license "PHP-3.01"
   # revision 1
