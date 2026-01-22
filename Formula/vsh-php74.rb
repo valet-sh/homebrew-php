@@ -240,6 +240,9 @@ class VshPhp74 < Formula
     end
 
     resource("imagick_module").stage do
+      args = %W[
+        --with-imagick=#{Formula["imagemagick"].opt_prefix}
+      ]
       system "#{bin}/phpize#{bin_suffix}"
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make", "clean"
