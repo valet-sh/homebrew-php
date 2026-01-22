@@ -13,7 +13,6 @@ class VshPhp80 < Formula
   end
 
   depends_on "bison" => :build
-  depends_on "gcc" => :build
   depends_on "pkgconf" => :build
   depends_on "re2c" => :build
   depends_on "apr"
@@ -129,7 +128,6 @@ class VshPhp80 < Formula
       --with-config-file-scan-dir=#{config_path}/conf.d
       --program-suffix=#{bin_suffix}
       --with-pear=#{pkgshare}/pear
-      --with-os-sdkpath=#{MacOS.sdk_path_if_needed}
       --disable-intl
       --enable-bcmath
       --enable-calendar
@@ -200,6 +198,9 @@ class VshPhp80 < Formula
     system "make"
     system "make", "install"
 
+    extension_dir = Utils.safe_popen_read(bin/"php-config", "--extension-dir").chomp
+    orig_ext_dir = File.basename(extension_dir)
+
     resource("xdebug_module").stage do
       system "#{bin}/phpize#{bin_suffix}"
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
@@ -262,7 +263,7 @@ class VshPhp80 < Formula
       end
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make"
-      system "make", "install"
+      system "make", "install", "EXTENSION_DIR=#{lib}/php/#{orig_ext_dir}"
     end
   end
 
