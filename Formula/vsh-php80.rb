@@ -25,7 +25,6 @@ class VshPhp80 < Formula
   depends_on "freetds"
   depends_on "freetype"
   depends_on "gd"
-  depends_on "gettext"
   depends_on "glib"
   depends_on "gmp"
   depends_on "icu4c@78"
@@ -53,7 +52,12 @@ class VshPhp80 < Formula
   uses_from_macos "libffi"
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
-  uses_from_macos "zlib" # must never be a runtime dependency
+  uses_from_macos "zlib"
+
+  on_macos do
+    depends_on "gcc" => :build
+    depends_on "gettext" # must never be a runtime dependency
+  end
 
   fails_with :clang do
     cause "Performs worse due to lack of general global register variables"
