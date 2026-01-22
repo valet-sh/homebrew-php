@@ -1,9 +1,9 @@
 class VshPhp74 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
-  url "https://github.com/shivammathur/php-src-backports/archive/e5b417c927f43ba9c4b237a672de1ec60d6f77ca.tar.gz"
+  url "https://github.com/shivammathur/php-src-backports/archive/4ab83a550530c864e4bef29b054f81f71874d8be.tar.gz"
   version "7.4.33"
-  sha256 "7f9b8e85407c223c3a45e11c1bb4fbebf66ef7c9008277eb1ddba2b5d1037384"
+  sha256 "1593ea9ebe9902aa1dcc5651e62de5cd38b67ac636e0e166110215592ab1f820"
   license "PHP-3.01"
   # revision 1
 
@@ -28,7 +28,7 @@ class VshPhp74 < Formula
   depends_on "gettext"
   depends_on "glib"
   depends_on "gmp"
-  depends_on "icu4c@77"
+  depends_on "icu4c@78"
   depends_on "imagemagick"
   depends_on "jpeg"
   depends_on "krb5"
@@ -55,6 +55,13 @@ class VshPhp74 < Formula
   uses_from_macos "libxslt"
   uses_from_macos "zlib"
 
+  on_macos do
+    depends_on "gcc" => :build
+    depends_on "gettext" # must never be a runtime dependency
+  end
+
+  # https://github.com/Homebrew/homebrew-core/issues/235820
+  # https://clang.llvm.org/docs/UsersManual.html#gcc-extensions-not-implemented-yet
   fails_with :clang do
     cause "Performs worse due to lack of general global register variables"
   end
@@ -77,8 +84,8 @@ class VshPhp74 < Formula
   end
 
   resource "imagick_module" do
-    url "https://github.com/Imagick/imagick/archive/3.4.4.tar.gz"
-    sha256 "8204d228ecbe5f744d625c90364808616127471581227415bca18857af981369"
+    url "https://github.com/Imagick/imagick/archive/refs/tags/3.8.0.tar.gz"
+    sha256 "a964e54a441392577f195d91da56e0b3cf30c32e6d60d0531a355b37bb1e1a59"
   end
   # rubocop:enable all
 
