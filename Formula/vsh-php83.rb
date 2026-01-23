@@ -171,6 +171,9 @@ class VshPhp83 < Formula
     system "make"
     system "make", "install"
 
+    extension_dir = Utils.safe_popen_read(bin/"php-config#{bin_suffix}", "--extension-dir").chomp
+    orig_ext_dir = File.basename(extension_dir)
+
     resource("xdebug_module").stage do
       system "#{bin}/phpize#{bin_suffix}"
 
