@@ -59,8 +59,8 @@ class VshPhp84 < Formula
   end
 
   resource "xdebug_module" do
-    url "https://github.com/xdebug/xdebug/archive/refs/tags/3.3.1.tar.gz"
-    sha256 "76d0467154d7f2714a07f88c7c17658e24dd58fb919a9aa08ab4bc23dccce76d"
+    url "https://github.com/xdebug/xdebug/archive/refs/tags/3.5.0.tar.gz"
+    sha256 "b10d27bc09f242004474f4cdb3736a27b0dae3f41a9bc92259493fc019f97d10"
   end
 
   resource "imagick_module" do
@@ -69,10 +69,6 @@ class VshPhp84 < Formula
   end
 
   def install
-    # GCC -Os performs worse than -O1 and significantly worse than -O2/-O3.
-    # We lack a DSL to enable -O2 so just use -O3 which is similar.
-    ENV.O3 if OS.mac?
-
     # buildconf required due to system library linking bug patch
     system "./buildconf", "--force"
 
@@ -190,6 +186,9 @@ class VshPhp84 < Formula
     system "./configure", *args
     system "make"
     system "make", "install"
+
+    extension_dir = Utils.safe_popen_read(bin/"php-config#{bin_suffix}", "--extension-dir").chomp
+    orig_ext_dir = File.basename(extension_dir)
 
     resource("xdebug_module").stage do
       system "#{bin}/phpize#{bin_suffix}"
