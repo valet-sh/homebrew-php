@@ -1,8 +1,9 @@
 class VshPhp83 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
-  url "https://www.php.net/distributions/php-8.3.25.tar.xz"
-  sha256 "187b61bb795015adacf53f8c55b44414a63777ec19a776b75fb88614506c0d37"
+  url "https://www.php.net/distributions/php-8.3.30.tar.xz"
+  mirror "https://fossies.org/linux/www/php-8.3.30.tar.xz"
+  sha256 "67f084d36852daab6809561a7c8023d130ca07fc6af8fb040684dd1414934d48"
   license "PHP-3.01"
   # revision 1
 
@@ -11,8 +12,7 @@ class VshPhp83 < Formula
     sha256 arm64_tahoe: "f16b4ec0a3bc02fda21e57c89e54c6c3669b759a33f13869327c0a03f1b511c4"
   end
 
-  depends_on "bison" => :build
-  depends_on "pkgconfig" => :build
+  depends_on "pkgconf" => :build
   depends_on "apr"
   depends_on "apr-util"
   depends_on "argon2"
@@ -20,11 +20,9 @@ class VshPhp83 < Formula
   depends_on "autoconf"
   depends_on "curl"
   depends_on "freetds"
-  depends_on "gcc"
   depends_on "gd"
-  depends_on "gettext"
   depends_on "gmp"
-  depends_on "icu4c@77"
+  depends_on "icu4c@78"
   depends_on "imagemagick"
   depends_on "krb5"
   depends_on "libpq"
@@ -39,13 +37,21 @@ class VshPhp83 < Formula
   depends_on "unixodbc"
   depends_on "webp"
 
+  uses_from_macos "xz" => :build
   uses_from_macos "bzip2"
   uses_from_macos "libedit"
-  uses_from_macos "libffi", since: :catalina
+  uses_from_macos "libffi"
   uses_from_macos "libxml2"
   uses_from_macos "libxslt"
   uses_from_macos "zlib"
 
+  on_macos do
+    depends_on "gcc" => :build
+    depends_on "gettext" # must never be a runtime dependency
+  end
+
+  # https://github.com/Homebrew/homebrew-core/issues/235820
+  # https://clang.llvm.org/docs/UsersManual.html#gcc-extensions-not-implemented-yet
   fails_with :clang do
     cause "Performs worse due to lack of general global register variables"
   end
@@ -60,13 +66,7 @@ class VshPhp83 < Formula
     sha256 "a964e54a441392577f195d91da56e0b3cf30c32e6d60d0531a355b37bb1e1a59"
   end
 
-  patch :DATA
-
   def install
-    # GCC -Os performs worse than -O1 and significantly worse than -O2/-O3.
-    # We lack a DSL to enable -O2 so just use -O3 which is similar.
-    ENV.O3 if OS.mac?
-
     # buildconf required due to system library linking bug patch
     system "./buildconf", "--force"
 
@@ -75,8 +75,6 @@ class VshPhp83 < Formula
     (config_path/"pear.conf").delete if (config_path/"pear.conf").exist?
 
     ENV["lt_cv_path_SED"] = "sed"
-
-    # Identify build provider in php -v output and phpinfo()
     ENV["PHP_BUILD_PROVIDER"] = "valet.sh"
 
     # system pkg-config missing
@@ -108,7 +106,7 @@ class VshPhp83 < Formula
       --with-config-file-scan-dir=#{config_path}/conf.d
       --program-suffix=#{bin_suffix}
       --with-pear=#{pkgshare}/pear
-      --with-os-sdkpath=#{MacOS.sdk_path_if_needed}
+      --disable-intl
       --enable-bcmath
       --enable-calendar
       --enable-dba
@@ -116,7 +114,6 @@ class VshPhp83 < Formula
       --enable-ftp
       --enable-fpm
       --enable-gd
-      --enable-intl
       --enable-mbregex
       --enable-mbstring
       --enable-mysqlnd
@@ -150,7 +147,7 @@ class VshPhp83 < Formula
       --with-mysqli=mysqlnd
       --with-ndbm#{headers_path}
       --with-openssl
-      --with-password-argon2
+      --with-password-argon2=#{Formula["argon2"].opt_prefix}
       --with-pdo-dblib=#{Formula["freetds"].opt_prefix}
       --with-pdo-mysql=mysqlnd
       --with-pdo-odbc=unixODBC,#{Formula["unixodbc"].opt_prefix}
@@ -231,6 +228,19 @@ class VshPhp83 < Formula
     mv "#{bin}/pecl", "#{bin}/pecl#{bin_suffix}"
     mv "#{bin}/pear", "#{bin}/pear#{bin_suffix}"
     mv "#{bin}/peardev", "#{bin}/peardev#{bin_suffix}"
+
+    cd "ext/intl" do
+      system "#{bin}/phpize#{bin_suffix}"
+      if OS.mac?
+        # rubocop:disable all
+        ENV["CC"] = "/usr/bin/clang"
+        ENV["CXX"] = "/usr/bin/clang++"
+        # rubocop:enable all
+      end
+      system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
+      system "make"
+      system "make", "install", "EXTENSION_DIR=#{lib}/php/#{orig_ext_dir}"
+    end
   end
 
   def post_install
@@ -303,46 +313,3 @@ class VshPhp83 < Formula
       "SNMP extension doesn't work reliably with Homebrew on High Sierra")
   end
 end
-
-__END__
-diff --git a/build/php.m4 b/build/php.m4
-index 3624a33a8e..d17a635c2c 100644
---- a/build/php.m4
-+++ b/build/php.m4
-@@ -425,7 +425,7 @@ dnl
- dnl Adds a path to linkpath/runpath (LDFLAGS).
- dnl
- AC_DEFUN([PHP_ADD_LIBPATH],[
--  if test "$1" != "/usr/$PHP_LIBDIR" && test "$1" != "/usr/lib"; then
-+  if test "$1" != "$PHP_OS_SDKPATH/usr/$PHP_LIBDIR" && test "$1" != "/usr/lib"; then
-     PHP_EXPAND_PATH($1, ai_p)
-     ifelse([$2],,[
-       _PHP_ADD_LIBPATH_GLOBAL([$ai_p])
-@@ -470,7 +470,7 @@ dnl
- dnl Add an include path. If before is 1, add in the beginning of INCLUDES.
- dnl
- AC_DEFUN([PHP_ADD_INCLUDE],[
--  if test "$1" != "/usr/include"; then
-+  if test "$1" != "$PHP_OS_SDKPATH/usr/include"; then
-     PHP_EXPAND_PATH($1, ai_p)
-     PHP_RUN_ONCE(INCLUDEPATH, $ai_p, [
-       if test "$2"; then
-diff --git a/configure.ac b/configure.ac
-index 36c6e5e3e2..71b1a16607 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -190,6 +190,14 @@ PHP_ARG_WITH([libdir],
-   [lib],
-   [no])
-
-+dnl Support systems with system libraries/includes in e.g. /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk.
-+PHP_ARG_WITH([os-sdkpath],
-+  [for system SDK directory],
-+  [AS_HELP_STRING([--with-os-sdkpath=NAME],
-+    [Ignore system libraries and includes in NAME rather than /])],
-+  [],
-+  [no])
-+
- PHP_ARG_ENABLE([rpath],
-   [whether to enable runpaths],
-   [AS_HELP_STRING([--disable-rpath],
