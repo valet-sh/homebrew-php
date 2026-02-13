@@ -5,7 +5,7 @@ class VshPhp83 < Formula
   mirror "https://fossies.org/linux/www/php-8.3.30.tar.xz"
   sha256 "67f084d36852daab6809561a7c8023d130ca07fc6af8fb040684dd1414934d48"
   license "PHP-3.01"
-  # revision 1
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -242,7 +242,7 @@ class VshPhp83 < Formula
       end
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make"
-      system "make", "install", "EXTENSION_DIR=#{lib}/php/#{orig_ext_dir}"
+      system "make", "install"
     end
   end
 
