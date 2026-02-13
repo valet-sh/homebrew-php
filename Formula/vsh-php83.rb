@@ -172,7 +172,6 @@ class VshPhp83 < Formula
     system "make", "install"
 
     extension_dir = Utils.safe_popen_read(bin/"php-config#{bin_suffix}", "--extension-dir").chomp
-    orig_ext_dir = File.basename(extension_dir)
 
     resource("xdebug_module").stage do
       system "#{bin}/phpize#{bin_suffix}"
@@ -262,6 +261,7 @@ class VshPhp83 < Formula
     end
 
     %w[
+      intl
       opcache
     ].each do |e|
       ext_config_path = etc/"#{name}/conf.d/ext-#{e}.ini"
