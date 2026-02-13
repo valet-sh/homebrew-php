@@ -6,7 +6,7 @@ class VshPhp84 < Formula
   mirror "https://fossies.org/linux/www/php-8.4.17.tar.xz"
   sha256 "28b234e347286158cae921d61283eb1169d89bc9d2e5f5976567260ff38b0bfa"
   license "PHP-3.01"
-  # revision 1
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -258,7 +258,7 @@ class VshPhp84 < Formula
       end
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make"
-      system "make", "install", "EXTENSION_DIR=#{lib}/php/#{orig_ext_dir}"
+      system "make", "install"
     end
   end
 
@@ -308,6 +308,7 @@ class VshPhp84 < Formula
     system bin/"pear#{bin_suffix}", "update-channels"
 
     %w[
+      intl
       opcache
     ].each do |e|
       ext_config_path = etc/"#{name}/conf.d/ext-#{e}.ini"
