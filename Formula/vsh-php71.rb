@@ -253,15 +253,15 @@ class VshPhp71 < Formula
     # check if php extension dir (e.g. 20180731) exists and is not a symlink
     # only relevant when running "brew postinstall" manually
     if (lib/"#{name}/#{php_ext_dir}").exist? && !(lib/"#{name}/#{php_ext_dir}").symlink?
-        (var/"#{name}/#{php_ext_dir}").mkpath unless (var/"#{name}/#{php_ext_dir}").exist?
+      (var/"#{name}/#{php_ext_dir}").mkpath unless (var/"#{name}/#{php_ext_dir}").exist?
 
-        Dir.glob(lib/"#{name}/#{php_ext_dir}/*") do |php_module|
-            php_module_name = File.basename(php_module)
-            mv php_module.to_s, var/"#{name}/#{php_ext_dir}/#{php_module_name}"
-        end
+      Dir.glob(lib/"#{name}/#{php_ext_dir}/*") do |php_module|
+        php_module_name = File.basename(php_module)
+        mv php_module.to_s, var/"#{name}/#{php_ext_dir}/#{php_module_name}"
+      end
 
-        rm_r lib/"#{name}/#{php_ext_dir}"
-        ln_s var/"#{name}/#{php_ext_dir}", lib/"#{name}/#{php_ext_dir}"
+      rm_r lib/"#{name}/#{php_ext_dir}"
+      ln_s var/"#{name}/#{php_ext_dir}", lib/"#{name}/#{php_ext_dir}"
     end
 
     pear_prefix = pkgshare/"pear"
