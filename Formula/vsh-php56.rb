@@ -109,9 +109,9 @@ class VshPhp56 < Formula
     # Prevent homebrew from hardcoding path to sed shim in phpize script
     ENV["lt_cv_path_SED"] = "sed"
 
-    # Each extension that is built on Mojave needs a direct reference to the
-    # sdk path or it won't find the headers
-    headers_path = "=#{MacOS.sdk_path_if_needed}/usr"
+    # Each extension that is built on Mojave needs a direct reference to the sdk path or it won't find the headers
+    headers_path = "=#{MacOS.sdk_for_formula(self).path}/usr"
+    gettext_path = "=#{Formula["gettext"].opt_prefix}"
 
     # `_www` only exists on macOS.
     fpm_user = OS.mac? ? "_www" : "www-data"
@@ -157,7 +157,7 @@ class VshPhp56 < Formula
       --with-fpm-group=#{fpm_group}
       --with-freetype-dir=#{Formula["freetype"].opt_prefix}
       --with-gd=#{Formula["gd"].opt_prefix}
-      --with-gettext=#{Formula["gettext"].opt_prefix}
+      --with-gettext#{gettext_path}
       --with-gmp=#{Formula["gmp"].opt_prefix}
       --with-iconv#{headers_path}
       --with-icu-dir=#{Formula["icu4c@78"].opt_prefix}
