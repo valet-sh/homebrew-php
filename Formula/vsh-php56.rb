@@ -79,6 +79,9 @@ class VshPhp56 < Formula
 
     # Work around for building with Xcode 15.3
     if DevelopmentTools.clang_build_version >= 1500
+      ENV.append "CFLAGS", "-std=gnu11"
+      ENV.append "CXXFLAGS", "-std=gnu++11"
+
       ENV.append "CFLAGS", "-Wno-incompatible-function-pointer-types"
       ENV.append "CFLAGS", "-Wno-implicit-int"
     end
