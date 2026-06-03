@@ -5,7 +5,7 @@ class VshPhp56 < Formula
   version "5.6.40"
   sha256 "b3397170680a3fe9f1ba36298794af232f76c1eb6d647cd0fe5581a5f233ffc3"
   license "PHP-3.01"
-  # revision 1
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -25,7 +25,7 @@ class VshPhp56 < Formula
   depends_on "gd"
   depends_on "gettext"
   depends_on "gmp"
-  depends_on "icu4c@77"
+  depends_on "icu4c@78"
   depends_on "imagemagick"
   depends_on "jpeg"
   depends_on "krb5"
@@ -160,7 +160,7 @@ class VshPhp56 < Formula
       --with-gettext=#{Formula["gettext"].opt_prefix}
       --with-gmp=#{Formula["gmp"].opt_prefix}
       --with-iconv#{headers_path}
-      --with-icu-dir=#{Formula["icu4c@77"].opt_prefix}
+      --with-icu-dir=#{Formula["icu4c@78"].opt_prefix}
       --with-jpeg-dir=#{Formula["jpeg"].opt_prefix}
       --with-kerberos#{headers_path}
       --with-layout=GNU
