@@ -4,7 +4,7 @@ class VshPhp82 < Formula
   url "https://www.php.net/distributions/php-8.2.30.tar.xz"
   sha256 "bc90523e17af4db46157e75d0c9ef0b9d0030b0514e62c26ba7b513b8c4eb015"
   license "PHP-3.01"
-  # revision 1
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
