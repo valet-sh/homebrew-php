@@ -189,6 +189,7 @@ class VshPhp82 < Formula
       # rubocop:disable all
       ENV["CC"] = "/usr/bin/clang"
       ENV["CXX"] = "/usr/bin/clang++"
+      ENV.append "CFLAGS", "-std=gnu17"
       # rubocop:enable all
 
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
