@@ -74,7 +74,7 @@ class VshPhp73 < Formula
 
   def install
     ENV.append "CFLAGS", "-std=gnu17"
-    
+
     # Work around configure issues with Xcode 15
     ENV.append "CFLAGS", "-Wno-implicit-function-declaration"
 
