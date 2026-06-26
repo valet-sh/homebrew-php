@@ -67,7 +67,7 @@ class VshPhp71 < Formula
 
   def install
     ENV.append "CFLAGS", "-std=gnu17"
-    
+
     # Work around configure issues with Xcode 12
     # See https://bugs.php.net/bug.php?id=80171
     ENV.append "CFLAGS", "-Wno-implicit-function-declaration"
