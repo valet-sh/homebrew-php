@@ -75,7 +75,7 @@ class VshPhp80 < Formula
 
   def install
     ENV.append "CFLAGS", "-std=gnu17"
-    
+
     # Work around for building with Xcode 15.3
     if DevelopmentTools.clang_build_version >= 1500
       ENV.append "CFLAGS", "-Wno-incompatible-function-pointer-types"
