@@ -140,19 +140,19 @@ class VshPhp73 < Formula
       --enable-wddx
       --enable-zip
       --with-bz2#{headers_path}
-      --with-curl=#{Formula["curl"].opt_prefix}
+      --with-curl=#{formula_opt_prefix("curl")}
       --with-fpm-user=_www
       --with-fpm-group=_www
-      --with-freetype-dir=#{Formula["freetype"].opt_prefix}
-      --with-gd=#{Formula["gd"].opt_prefix}
-      --with-gettext=#{Formula["gettext"].opt_prefix}
-      --with-gmp=#{Formula["gmp"].opt_prefix}
+      --with-freetype-dir=#{formula_opt_prefix("freetype")}
+      --with-gd=#{formula_opt_prefix("gd")}
+      --with-gettext=#{formula_opt_prefix("gettext")}
+      --with-gmp=#{formula_opt_prefix("gmp")}
       --with-iconv#{headers_path}
-      --with-icu-dir=#{Formula["icu4c@77"].opt_prefix}
-      --with-jpeg-dir=#{Formula["jpeg"].opt_prefix}
+      --with-icu-dir=#{formula_opt_prefix("icu4c@77")}
+      --with-jpeg-dir=#{formula_opt_prefix("jpeg")}
       --with-kerberos#{headers_path}
       --with-layout=GNU
-      --with-ldap=#{Formula["openldap"].opt_prefix}
+      --with-ldap=#{formula_opt_prefix("openldap")}
       --with-ldap-sasl#{headers_path}
       --with-libxml-dir#{headers_path}
       --with-libedit#{headers_path}
@@ -161,23 +161,23 @@ class VshPhp73 < Formula
       --with-mysql-sock=/tmp/mysql.sock
       --with-mysqli=mysqlnd
       --with-ndbm#{headers_path}
-      --with-openssl=#{Formula["openssl@3"].opt_prefix}
-      --with-password-argon2=#{Formula["argon2"].opt_prefix}
-      --with-pdo-dblib=#{Formula["freetds"].opt_prefix}
+      --with-openssl=#{formula_opt_prefix("openssl@3")}
+      --with-password-argon2=#{formula_opt_prefix("argon2")}
+      --with-pdo-dblib=#{formula_opt_prefix("freetds")}
       --with-pdo-mysql=mysqlnd
-      --with-pdo-odbc=unixODBC,#{Formula["unixodbc"].opt_prefix}
-      --with-pdo-pgsql=#{Formula["libpq"].opt_prefix}
-      --with-pdo-sqlite=#{Formula["sqlite"].opt_prefix}
-      --with-pgsql=#{Formula["libpq"].opt_prefix}
+      --with-pdo-odbc=unixODBC,#{formula_opt_prefix("unixodbc")}
+      --with-pdo-pgsql=#{formula_opt_prefix("libpq")}
+      --with-pdo-sqlite=#{formula_opt_prefix("sqlite")}
+      --with-pgsql=#{formula_opt_prefix("libpq")}
       --with-pic
-      --with-png-dir=#{Formula["libpng"].opt_prefix}
-      --with-pspell=#{Formula["aspell"].opt_prefix}
-      --with-sodium=#{Formula["libsodium"].opt_prefix}
-      --with-sqlite3=#{Formula["sqlite"].opt_prefix}
-      --with-tidy=#{Formula["tidy-html5"].opt_prefix}
-      --with-unixODBC=#{Formula["unixodbc"].opt_prefix}
-      --with-webp-dir=#{Formula["webp"].opt_prefix}
-      --with-xpm-dir=#{Formula["libxpm"].opt_prefix}
+      --with-png-dir=#{formula_opt_prefix("libpng")}
+      --with-pspell=#{formula_opt_prefix("aspell")}
+      --with-sodium=#{formula_opt_prefix("libsodium")}
+      --with-sqlite3=#{formula_opt_prefix("sqlite")}
+      --with-tidy=#{formula_opt_prefix("tidy-html5")}
+      --with-unixODBC=#{formula_opt_prefix("unixodbc")}
+      --with-webp-dir=#{formula_opt_prefix("webp")}
+      --with-xpm-dir=#{formula_opt_prefix("libxpm")}
       --with-xmlrpc
       --with-xsl#{headers_path}
       --with-zlib#{headers_path}
@@ -353,7 +353,7 @@ class VshPhp73 < Formula
     # Test related to libxml2 and
     # https://github.com/Homebrew/homebrew-core/issues/28398
     assert_includes MachO::Tools.dylibs("#{bin}/php#{bin_suffix}"),
-      "#{Formula["libpq"].opt_lib}/libpq.5.dylib"
+      "#{formula_opt_lib("libpq")}/libpq.5.dylib"
     system "#{sbin}/php-fpm#{bin_suffix}", "-t"
     system "#{bin}/phpdbg#{bin_suffix}", "-V"
     system "#{bin}/php-cgi#{bin_suffix}", "-m"

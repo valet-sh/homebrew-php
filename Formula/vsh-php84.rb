@@ -87,9 +87,9 @@ class VshPhp84 < Formula
       ENV["SASL_CFLAGS"] = "-I#{MacOS.sdk_path_if_needed}/usr/include/sasl"
       ENV["SASL_LIBS"] = "-lsasl2"
     else
-      ENV["SQLITE_CFLAGS"] = "-I#{Formula["sqlite"].opt_include}"
+      ENV["SQLITE_CFLAGS"] = "-I#{formula_opt_include("sqlite")}"
       ENV["SQLITE_LIBS"] = "-lsqlite3"
-      ENV["BZIP_DIR"] = Formula["bzip2"].opt_prefix
+      ENV["BZIP_DIR"] = formula_opt_prefix("bzip2")
     end
 
     # Each extension that is built on Mojave needs a direct reference to the
@@ -142,11 +142,11 @@ class VshPhp84 < Formula
       --with-ffi
       --with-fpm-user=#{fpm_user}
       --with-fpm-group=#{fpm_group}
-      --with-gettext=#{Formula["gettext"].opt_prefix}
-      --with-gmp=#{Formula["gmp"].opt_prefix}
+      --with-gettext=#{formula_opt_prefix("gettext")}
+      --with-gmp=#{formula_opt_prefix("gmp")}
       --with-iconv#{headers_path}
       --with-layout=GNU
-      --with-ldap=#{Formula["openldap"].opt_prefix}
+      --with-ldap=#{formula_opt_prefix("openldap")}
       --with-libxml
       --with-libedit
       --with-mhash#{headers_path}
@@ -154,18 +154,18 @@ class VshPhp84 < Formula
       --with-mysqli=mysqlnd
       --with-ndbm#{headers_path}
       --with-openssl
-      --with-password-argon2=#{Formula["argon2"].opt_prefix}
-      --with-pdo-dblib=#{Formula["freetds"].opt_prefix}
+      --with-password-argon2=#{formula_opt_prefix("argon2")}
+      --with-pdo-dblib=#{formula_opt_prefix("freetds")}
       --with-pdo-mysql=mysqlnd
-      --with-pdo-odbc=unixODBC,#{Formula["unixodbc"].opt_prefix}
-      --with-pdo-pgsql=#{Formula["libpq"].opt_prefix}
+      --with-pdo-odbc=unixODBC,#{formula_opt_prefix("unixodbc")}
+      --with-pdo-pgsql=#{formula_opt_prefix("libpq")}
       --with-pdo-sqlite
-      --with-pgsql=#{Formula["libpq"].opt_prefix}
+      --with-pgsql=#{formula_opt_prefix("libpq")}
       --with-pic
-      --with-snmp=#{Formula["net-snmp"].opt_prefix}
+      --with-snmp=#{formula_opt_prefix("net-snmp")}
       --with-sodium
       --with-sqlite3
-      --with-tidy=#{Formula["tidy-html5"].opt_prefix}
+      --with-tidy=#{formula_opt_prefix("tidy-html5")}
       --with-unixODBC
       --with-xsl
       --with-zip
@@ -203,7 +203,7 @@ class VshPhp84 < Formula
 
     resource("imagick_module").stage do
       args = %W[
-        --with-imagick=#{Formula["imagemagick"].opt_prefix}
+        --with-imagick=#{formula_opt_prefix("imagemagick")}
       ]
       system "#{bin}/phpize#{bin_suffix}"
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}", *args
@@ -351,7 +351,7 @@ class VshPhp84 < Formula
     # Test related to libxml2 and
     # https://github.com/Homebrew/homebrew-core/issues/28398
     assert_includes MachO::Tools.dylibs("#{bin}/php#{bin_suffix}"),
-      "#{Formula["libpq"].opt_lib}/libpq.5.dylib"
+      "#{formula_opt_lib("libpq")}/libpq.5.dylib"
     system "#{sbin}/php-fpm#{bin_suffix}", "-t"
     system "#{bin}/phpdbg#{bin_suffix}", "-V"
     system "#{bin}/php-cgi#{bin_suffix}", "-m"

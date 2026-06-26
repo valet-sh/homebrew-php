@@ -114,7 +114,7 @@ class VshPhp56 < Formula
 
     # Each extension that is built on Mojave needs a direct reference to the sdk path or it won't find the headers
     headers_path = "=#{MacOS.sdk_for_formula(self).path}/usr"
-    gettext_path = "=#{Formula["gettext"].opt_prefix}"
+    gettext_path = "=#{formula_opt_prefix("gettext")}"
 
     # `_www` only exists on macOS.
     fpm_user = OS.mac? ? "_www" : "www-data"
@@ -155,41 +155,41 @@ class VshPhp56 < Formula
       --enable-sysvshm
       --enable-wddx
       --enable-zip
-      --with-curl=#{Formula["curl"].opt_prefix}
+      --with-curl=#{formula_opt_prefix("curl")}
       --with-fpm-user=#{fpm_user}
       --with-fpm-group=#{fpm_group}
-      --with-freetype-dir=#{Formula["freetype"].opt_prefix}
-      --with-gd=#{Formula["gd"].opt_prefix}
+      --with-freetype-dir=#{formula_opt_prefix("freetype")}
+      --with-gd=#{formula_opt_prefix("gd")}
       --with-gettext#{gettext_path}
-      --with-gmp=#{Formula["gmp"].opt_prefix}
+      --with-gmp=#{formula_opt_prefix("gmp")}
       --with-iconv#{headers_path}
-      --with-icu-dir=#{Formula["icu4c@78"].opt_prefix}
-      --with-jpeg-dir=#{Formula["jpeg"].opt_prefix}
+      --with-icu-dir=#{formula_opt_prefix("icu4c@78")}
+      --with-jpeg-dir=#{formula_opt_prefix("jpeg")}
       --with-kerberos#{headers_path}
       --with-layout=GNU
-      --with-ldap=#{Formula["openldap"].opt_prefix}
+      --with-ldap=#{formula_opt_prefix("openldap")}
       --with-ldap-sasl#{headers_path}
       --with-libzip
-      --with-mcrypt=#{Formula["vsh-mcrypt"].opt_prefix}
+      --with-mcrypt=#{formula_opt_prefix("vsh-mcrypt")}
       --with-mhash#{headers_path}
       --with-mysql-sock=/tmp/mysql.sock
       --with-mysqli=mysqlnd
       --with-mysql=mysqlnd
-      --with-openssl=#{Formula["openssl@3"].opt_prefix}
-      --with-pdo-dblib=#{Formula["freetds"].opt_prefix}
+      --with-openssl=#{formula_opt_prefix("openssl@3")}
+      --with-pdo-dblib=#{formula_opt_prefix("freetds")}
       --with-pdo-mysql=mysqlnd
-      --with-pdo-odbc=unixODBC,#{Formula["unixodbc"].opt_prefix}
-      --with-pdo-pgsql=#{Formula["libpq"].opt_prefix}
-      --with-pdo-sqlite=#{Formula["sqlite"].opt_prefix}
-      --with-pgsql=#{Formula["libpq"].opt_prefix}
+      --with-pdo-odbc=unixODBC,#{formula_opt_prefix("unixodbc")}
+      --with-pdo-pgsql=#{formula_opt_prefix("libpq")}
+      --with-pdo-sqlite=#{formula_opt_prefix("sqlite")}
+      --with-pgsql=#{formula_opt_prefix("libpq")}
       --with-pic
-      --with-png-dir=#{Formula["libpng"].opt_prefix}
-      --with-pspell=#{Formula["aspell"].opt_prefix}
-      --with-sqlite3=#{Formula["sqlite"].opt_prefix}
-      --with-tidy=#{Formula["tidy-html5"].opt_prefix}
-      --with-unixODBC=#{Formula["unixodbc"].opt_prefix}
+      --with-png-dir=#{formula_opt_prefix("libpng")}
+      --with-pspell=#{formula_opt_prefix("aspell")}
+      --with-sqlite3=#{formula_opt_prefix("sqlite")}
+      --with-tidy=#{formula_opt_prefix("tidy-html5")}
+      --with-unixODBC=#{formula_opt_prefix("unixodbc")}
       --with-xmlrpc
-      --with-xpm-dir=#{Formula["libxpm"].opt_prefix}
+      --with-xpm-dir=#{formula_opt_prefix("libxpm")}
       --with-bz2#{headers_path}
       --with-libedit#{headers_path}
       --with-libxml-dir#{headers_path}
@@ -212,7 +212,7 @@ class VshPhp56 < Formula
 
     resource("imagick_module").stage do
       args = %W[
-        --with-imagick=#{Formula["imagemagick"].opt_prefix}
+        --with-imagick=#{formula_opt_prefix("imagemagick")}
       ]
       system "#{bin}/phpize#{bin_suffix}"
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}", *args
@@ -223,7 +223,7 @@ class VshPhp56 < Formula
 
     resource("geoip_module").stage do
       args = %W[
-        --with-geoip=#{Formula["vsh-geoip"].opt_prefix}
+        --with-geoip=#{formula_opt_prefix("vsh-geoip")}
       ]
       system "#{bin}/phpize#{bin_suffix}"
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}", *args
@@ -363,7 +363,7 @@ class VshPhp56 < Formula
     # Test related to libxml2 and
     # https://github.com/Homebrew/homebrew-core/issues/28398
     assert_includes MachO::Tools.dylibs("#{bin}/php#{bin_suffix}"),
-      "#{Formula["libpq"].opt_lib}/libpq.5.dylib"
+      "#{formula_opt_lib("libpq")}/libpq.5.dylib"
     system "#{sbin}/php-fpm#{bin_suffix}", "-t"
     system "#{bin}/phpdbg#{bin_suffix}", "-V"
     system "#{bin}/php-cgi#{bin_suffix}", "-m"
