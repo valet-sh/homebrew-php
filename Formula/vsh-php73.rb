@@ -9,7 +9,7 @@ class VshPhp73 < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_tahoe: "c2e316b7ada1bab09d4d002726258f90599f548f0f3db88c1b47b365afb5a213"
+    sha256 arm64_tahoe: "637d7fb282316725abda27a4d2db98863d30b8d8da28ec646290115874e6928e"
   end
 
   depends_on "bison" => :build
