@@ -301,6 +301,7 @@ class VshPhp82 < Formula
     system bin/"pear#{bin_suffix}", "update-channels"
 
     %w[
+      intl
       opcache
     ].each do |e|
       ext_config_path = etc/"#{name}/conf.d/ext-#{e}.ini"
