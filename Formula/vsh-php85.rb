@@ -7,7 +7,7 @@ class VshPhp85 < Formula
   license all_of: [
     "PHP-3.01",
   ]
-  revision 1
+  revision 2
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
