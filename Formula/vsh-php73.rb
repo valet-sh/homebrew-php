@@ -5,11 +5,11 @@ class VshPhp73 < Formula
   version "7.3.33"
   sha256 "c9bc90d6c3d7b2d3a9e17581d36382f4db3e20e3e43225db5437c52e2f2de7bf"
   license "PHP-3.01"
-  # revision 1
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_tahoe: "d0dd7ff2bd34fe466152c661eaee46d51ef1fe9b5df960107b32de5bea2cf936"
+    sha256 arm64_tahoe: "c2e316b7ada1bab09d4d002726258f90599f548f0f3db88c1b47b365afb5a213"
   end
 
   depends_on "bison" => :build
@@ -73,6 +73,8 @@ class VshPhp73 < Formula
   patch :DATA
 
   def install
+    ENV.append "CFLAGS", "-std=gnu17"
+
     # Work around configure issues with Xcode 15
     ENV.append "CFLAGS", "-Wno-implicit-function-declaration"
 

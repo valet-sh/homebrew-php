@@ -4,11 +4,11 @@ class VshPhp82 < Formula
   url "https://www.php.net/distributions/php-8.2.30.tar.xz"
   sha256 "bc90523e17af4db46157e75d0c9ef0b9d0030b0514e62c26ba7b513b8c4eb015"
   license "PHP-3.01"
-  # revision 1
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_tahoe: "23d5f6d21e1a72ed44a7127ea8cc36260f76740ddef0f073f5b41e519f055f84"
+    sha256 arm64_tahoe: "dad715158a88ad3b00ecc3615fcaa8942ca06dee37d50ab13856ed8107a0a521"
   end
 
   depends_on "pkgconf" => :build
@@ -189,6 +189,7 @@ class VshPhp82 < Formula
       # rubocop:disable all
       ENV["CC"] = "/usr/bin/clang"
       ENV["CXX"] = "/usr/bin/clang++"
+      ENV.append "CFLAGS", "-std=gnu17"
       # rubocop:enable all
 
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"

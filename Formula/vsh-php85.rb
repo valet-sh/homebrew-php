@@ -7,11 +7,11 @@ class VshPhp85 < Formula
   license all_of: [
     "PHP-3.01",
   ]
-  # revision 1
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_tahoe: "2f03cf274caef814178c579d74f68a23d626fd84f5f6945f45488767a6d221d2"
+    sha256 arm64_tahoe: "21732f0873006827caba45e5a90779e28034d45d8611e045fc024db4b8f5bc10"
   end
 
   depends_on "bison" => :build

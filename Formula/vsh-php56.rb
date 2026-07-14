@@ -5,11 +5,11 @@ class VshPhp56 < Formula
   version "5.6.40"
   sha256 "c7aea2d4742a6daadfa333dce1e6707bd648b2ed54e36238674db026e27d43cf"
   license "PHP-3.01"
-  revision 1
+  revision 2
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_tahoe: "671e3ee4654337e1245a4db50e9941282c3b84b3958654c1f044d621451e8abe"
+    sha256 arm64_tahoe: "335c781c83856d3cde78e2210e3e920e7cd34dc8807951da81ab50e97e0d5767"
   end
 
   depends_on "bison" => :build
@@ -73,6 +73,8 @@ class VshPhp56 < Formula
   end
 
   def install
+    ENV.append "CFLAGS", "-std=gnu17"
+
     # Work around configure issues with Xcode 12
     # See https://bugs.php.net/bug.php?id=80171
     ENV.append "CFLAGS", "-Wno-implicit-function-declaration"

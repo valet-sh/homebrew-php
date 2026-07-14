@@ -5,11 +5,11 @@ class VshPhp80 < Formula
   version "8.0.30"
   sha256 "6f0f2a0dbb37e904859d7cc9ac12425434333a5c4b811b674621525430bd5472"
   license "PHP-3.01"
-  # revision 1
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_tahoe: "c5ce3c6a95e7dd98d6e435137fd12f076df1c70fc3d73585336fd47df55d0a21"
+    sha256 arm64_tahoe: "fd513df576671184fa9516903a48f7540c1750a67ba41c959a39c5707d359484"
   end
 
   depends_on "bison" => :build
@@ -74,6 +74,8 @@ class VshPhp80 < Formula
   end
 
   def install
+    ENV.append "CFLAGS", "-std=gnu17"
+
     # Work around for building with Xcode 15.3
     if DevelopmentTools.clang_build_version >= 1500
       ENV.append "CFLAGS", "-Wno-incompatible-function-pointer-types"

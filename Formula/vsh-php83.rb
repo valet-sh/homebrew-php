@@ -5,11 +5,11 @@ class VshPhp83 < Formula
   mirror "https://fossies.org/linux/www/php-8.3.30.tar.xz"
   sha256 "67f084d36852daab6809561a7c8023d130ca07fc6af8fb040684dd1414934d48"
   license "PHP-3.01"
-  revision 1
+  revision 2
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_tahoe: "2cac9c017b84c084cec74d0904068f0510f89981187b4c1cf78e2b06d01d7eba"
+    sha256 arm64_tahoe: "12fb43d83f2845ae3339eafd24eba2dc15808d3c1736ef501c9f282a06b78cb5"
   end
 
   depends_on "pkgconf" => :build
@@ -177,6 +177,7 @@ class VshPhp83 < Formula
       # rubocop:disable all
       ENV["CC"] = "/usr/bin/clang"
       ENV["CXX"] = "/usr/bin/clang++"
+      ENV.append "CFLAGS", "-std=gnu17"
       # rubocop:enable all
 
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"

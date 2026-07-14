@@ -6,11 +6,11 @@ class VshPhp84 < Formula
   mirror "https://fossies.org/linux/www/php-8.4.17.tar.xz"
   sha256 "28b234e347286158cae921d61283eb1169d89bc9d2e5f5976567260ff38b0bfa"
   license "PHP-3.01"
-  revision 1
+  revision 2
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_tahoe: "1aaabbd90b0e7b16eef4a7390ab0b997ca18b62af0fbe43f1eb00a779f998e39"
+    sha256 arm64_tahoe: "9fc5891ac26becb99e44d92d40aafc65185014fb323a63e600380f4e988f8e43"
   end
 
   depends_on "pkgconf" => :build

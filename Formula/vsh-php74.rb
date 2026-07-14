@@ -5,11 +5,11 @@ class VshPhp74 < Formula
   version "7.4.33"
   sha256 "1593ea9ebe9902aa1dcc5651e62de5cd38b67ac636e0e166110215592ab1f820"
   license "PHP-3.01"
-  # revision 1
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_tahoe: "0fd4d36bcfd39c95606389b5293c12b2548a1b8815ac2018eb81f6e3041a4fac"
+    sha256 arm64_tahoe: "06332ea4123ad787cfb607351ce85468dceb75c55359fb2c4cdedcf43664115e"
   end
 
   depends_on "bison" => :build
@@ -90,6 +90,8 @@ class VshPhp74 < Formula
   # rubocop:enable all
 
   def install
+    ENV.append "CFLAGS", "-std=gnu17"
+
     # Work around for building with Xcode 15.3
     if DevelopmentTools.clang_build_version >= 1500
       ENV.append "CFLAGS", "-Wno-incompatible-function-pointer-types"

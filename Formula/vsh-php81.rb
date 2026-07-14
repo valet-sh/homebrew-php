@@ -4,11 +4,11 @@ class VshPhp81 < Formula
   url "https://www.php.net/distributions/php-8.1.34.tar.xz"
   sha256 "ffa9e0982e82eeaea848f57687b425ed173aa278fe563001310ae2638db5c251"
   license "PHP-3.01"
-  # revision 1
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_tahoe: "8889197c35afce5a8b75790c7a16b3526469fcee5bfa242be16db6ccabecccf4"
+    sha256 arm64_tahoe: "6dbe0543f6496183e25e8a54020ec354f039d519c3f0d13718f73b26a2185fb5"
   end
 
   depends_on "pkgconf" => :build
@@ -215,9 +215,10 @@ class VshPhp81 < Formula
     resource("xdebug_module").stage do
       system "#{bin}/phpize#{bin_suffix}"
 
-      # rubocop:disable all
+      # rubocop:disable all      
       ENV["CC"] = "/usr/bin/clang"
       ENV["CXX"] = "/usr/bin/clang++"
+      ENV.append "CFLAGS", "-std=gnu17"
       # rubocop:enable all
 
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
