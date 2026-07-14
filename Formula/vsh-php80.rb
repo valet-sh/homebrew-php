@@ -5,7 +5,7 @@ class VshPhp80 < Formula
   version "8.0.30"
   sha256 "6f0f2a0dbb37e904859d7cc9ac12425434333a5c4b811b674621525430bd5472"
   license "PHP-3.01"
-  revision 1
+  revision 2
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
