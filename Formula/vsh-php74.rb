@@ -66,20 +66,17 @@ class VshPhp74 < Formula
     cause "Performs worse due to lack of general global register variables"
   end
 
-  patch :DATA
-
-  # rubocop:disable all
   fails_with :clang do
     cause "Performs worse due to lack of general global register variables"
   end
 
   resource "xdebug_module" do
-    url "https://github.com/xdebug/xdebug/archive/3.1.6.tar.gz"
+    url "https://github.com/xdebug/xdebug/archive/refs/tags/3.1.6.tar.gz"
     sha256 "217e05fbe43940fcbfe18e8f15e3e8ded7dd35926b0bee916782d0fffe8dcc53"
   end
 
   resource "xdebug2_module" do
-    url "https://github.com/xdebug/xdebug/archive/2.9.8.tar.gz"
+    url "https://github.com/xdebug/xdebug/archive/refs/tags/2.9.8.tar.gz"
     sha256 "28f8de8e6491f51ac9f551a221275360458a01c7690c42b23b9a0d2e6429eff4"
   end
 
@@ -87,7 +84,8 @@ class VshPhp74 < Formula
     url "https://github.com/Imagick/imagick/archive/refs/tags/3.8.0.tar.gz"
     sha256 "a964e54a441392577f195d91da56e0b3cf30c32e6d60d0531a355b37bb1e1a59"
   end
-  # rubocop:enable all
+
+  patch :DATA
 
   def install
     ENV.append "CFLAGS", "-std=gnu17"
@@ -237,10 +235,7 @@ class VshPhp74 < Formula
     resource("xdebug_module").stage do
       system "#{bin}/phpize#{bin_suffix}"
 
-      # rubocop:disable all
-      ENV["CC"] = "/usr/bin/clang"
-      ENV["CXX"] = "/usr/bin/clang++"
-      # rubocop:enable all
+      ENV.clang
 
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make", "clean"
@@ -295,10 +290,7 @@ class VshPhp74 < Formula
     cd "ext/intl" do
       system "#{bin}/phpize#{bin_suffix}"
       if OS.mac?
-        # rubocop:disable all
-        ENV["CC"] = "/usr/bin/clang"
-        ENV["CXX"] = "/usr/bin/clang++"
-        # rubocop:enable all
+        ENV.clang
       end
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make"

@@ -190,10 +190,7 @@ class VshPhp84 < Formula
     resource("xdebug_module").stage do
       system "#{bin}/phpize#{bin_suffix}"
 
-      # rubocop:disable all
-      ENV["CC"] = "/usr/bin/clang"
-      ENV["CXX"] = "/usr/bin/clang++"
-      # rubocop:enable all
+      ENV.clang
 
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make", "clean"
@@ -248,10 +245,8 @@ class VshPhp84 < Formula
     cd "ext/intl" do
       system "#{bin}/phpize#{bin_suffix}"
       if OS.mac?
-        # rubocop:disable all
-        ENV["CC"] = "/usr/bin/clang"
-        ENV["CXX"] = "/usr/bin/clang++"
-        # rubocop:enable all
+        ENV.clang
+        ENV.append "LDFLAGS", "-Wl,-headerpad_max_install_names"
       end
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make"

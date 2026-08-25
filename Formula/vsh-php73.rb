@@ -53,17 +53,15 @@ class VshPhp73 < Formula
   uses_from_macos "libxslt"
   uses_from_macos "zlib"
 
-  # rubocop:disable all
   resource "xdebug_module" do
-    url "https://github.com/xdebug/xdebug/archive/3.1.6.tar.gz"
+    url "https://github.com/xdebug/xdebug/archive/refs/tags/3.1.6.tar.gz"
     sha256 "217e05fbe43940fcbfe18e8f15e3e8ded7dd35926b0bee916782d0fffe8dcc53"
   end
 
   resource "xdebug2_module" do
-    url "https://github.com/xdebug/xdebug/archive/2.9.8.tar.gz"
+    url "https://github.com/xdebug/xdebug/archive/refs/tags/2.9.8.tar.gz"
     sha256 "28f8de8e6491f51ac9f551a221275360458a01c7690c42b23b9a0d2e6429eff4"
   end
-  # rubocop:enable all
 
   resource "imagick_module" do
     url "https://github.com/Imagick/imagick/archive/refs/tags/3.8.0.tar.gz"

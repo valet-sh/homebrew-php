@@ -209,17 +209,11 @@ class VshPhp81 < Formula
     system "make"
     system "make", "install"
 
-    extension_dir = Utils.safe_popen_read(bin/"php-config#{bin_suffix}", "--extension-dir").chomp
-    orig_ext_dir = File.basename(extension_dir)
-
     resource("xdebug_module").stage do
       system "#{bin}/phpize#{bin_suffix}"
 
-      # rubocop:disable all      
-      ENV["CC"] = "/usr/bin/clang"
-      ENV["CXX"] = "/usr/bin/clang++"
+      ENV.clang
       ENV.append "CFLAGS", "-std=gnu17"
-      # rubocop:enable all
 
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make", "clean"
@@ -274,14 +268,11 @@ class VshPhp81 < Formula
     cd "ext/intl" do
       system "#{bin}/phpize#{bin_suffix}"
       if OS.mac?
-        # rubocop:disable all
-        ENV["CC"] = "/usr/bin/clang"
-        ENV["CXX"] = "/usr/bin/clang++"
-        # rubocop:enable all
+        ENV.clang
       end
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make"
-      system "make", "install", "EXTENSION_DIR=#{lib}/php/#{orig_ext_dir}"
+      system "make", "install"
     end
   end
 

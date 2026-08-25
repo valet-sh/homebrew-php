@@ -52,12 +52,10 @@ class VshPhp70 < Formula
   uses_from_macos "libxslt"
   uses_from_macos "zlib"
 
-  # rubocop:disable all
   resource "xdebug_module" do
-    url "https://github.com/xdebug/xdebug/archive/2.9.0.tar.gz"
+    url "https://github.com/xdebug/xdebug/archive/refs/tags/2.9.0.tar.gz"
     sha256 "d388ad2564a94c52b19eab26983c3686fae8670e13001b51d2cc3b8a1ac4b733"
   end
-  # rubocop:enable all
 
   resource "imagick_module" do
     url "https://github.com/Imagick/imagick/archive/refs/tags/3.8.0.tar.gz"

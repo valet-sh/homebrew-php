@@ -52,19 +52,17 @@ class VshPhp72 < Formula
   uses_from_macos "libxslt"
   uses_from_macos "zlib"
 
-  patch :DATA
-
-  # rubocop:disable all
   resource "xdebug_module" do
-    url "https://github.com/xdebug/xdebug/archive/2.9.8.tar.gz"
+    url "https://github.com/xdebug/xdebug/archive/refs/tags/2.9.8.tar.gz"
     sha256 "28f8de8e6491f51ac9f551a221275360458a01c7690c42b23b9a0d2e6429eff4"
   end
-  # rubocop:enable all
 
   resource "imagick_module" do
     url "https://github.com/Imagick/imagick/archive/refs/tags/3.8.0.tar.gz"
     sha256 "a964e54a441392577f195d91da56e0b3cf30c32e6d60d0531a355b37bb1e1a59"
   end
+
+  patch :DATA
 
   def install
     ENV.append "CFLAGS", "-std=gnu17"

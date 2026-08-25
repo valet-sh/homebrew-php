@@ -59,19 +59,17 @@ class VshPhp80 < Formula
     cause "Performs worse due to lack of general global register variables"
   end
 
-  patch :DATA
-
-  # rubocop:disable all
   resource "xdebug_module" do
-    url "https://github.com/xdebug/xdebug/archive/3.4.7.tar.gz"
+    url "https://github.com/xdebug/xdebug/archive/refs/tags/3.4.7.tar.gz"
     sha256 "6959726ee2bb99efd660796736801b198ec0847b6360230a8143ad5e2d2063c2"
   end
-  # rubocop:enable all
 
   resource "imagick_module" do
     url "https://github.com/Imagick/imagick/archive/refs/tags/3.8.0.tar.gz"
     sha256 "a964e54a441392577f195d91da56e0b3cf30c32e6d60d0531a355b37bb1e1a59"
   end
+
+  patch :DATA
 
   def install
     ENV.append "CFLAGS", "-std=gnu17"
@@ -197,9 +195,6 @@ class VshPhp80 < Formula
     system "make"
     system "make", "install"
 
-    extension_dir = Utils.safe_popen_read(bin/"php-config#{bin_suffix}", "--extension-dir").chomp
-    orig_ext_dir = File.basename(extension_dir)
-
     resource("xdebug_module").stage do
       system "#{bin}/phpize#{bin_suffix}"
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
@@ -255,14 +250,11 @@ class VshPhp80 < Formula
     cd "ext/intl" do
       system "#{bin}/phpize#{bin_suffix}"
       if OS.mac?
-        # rubocop:disable all
-        ENV["CC"] = "/usr/bin/clang"
-        ENV["CXX"] = "/usr/bin/clang++"
-        # rubocop:enable all
+        ENV.clang
       end
       system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
       system "make"
-      system "make", "install", "EXTENSION_DIR=#{lib}/php/#{orig_ext_dir}"
+      system "make", "install"
     end
   end
 

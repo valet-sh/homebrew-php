@@ -55,12 +55,11 @@ class VshPhp56 < Formula
     patch :DATA
   end
 
-  # rubocop:disable all
   resource "xdebug_module" do
-    url "https://github.com/xdebug/xdebug/archive/XDEBUG_2_5_5.tar.gz"
+    url "https://github.com/xdebug/xdebug/archive/refs/tags/XDEBUG_2_5_5.tar.gz"
+    version "2.5.5"
     sha256 "77faf3bc49ca85d9b67ae2aa9d9cc4b017544f2566e918bf90fe23d68e044244"
   end
-  # rubocop:enable all
 
   resource "imagick_module" do
     url "https://github.com/Imagick/imagick/archive/refs/tags/3.8.0.tar.gz"
