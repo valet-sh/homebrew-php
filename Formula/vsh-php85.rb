@@ -7,7 +7,7 @@ class VshPhp85 < Formula
   license all_of: [
     "PHP-3.01",
   ]
-  revision 2
+  revision 3
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -272,22 +272,6 @@ class VshPhp85 < Formula
     end
 
     system bin/"pear#{bin_suffix}", "update-channels"
-
-    %w[
-      opcache
-    ].each do |e|
-      ext_config_path = etc/"#{name}/conf.d/ext-#{e}.ini"
-      extension_type = (e == "opcache") ? "zend_extension" : "extension"
-      if ext_config_path.exist?
-        inreplace ext_config_path,
-          /#{extension_type}=.*$/, "#{extension_type}=#{e}.so"
-      else
-        ext_config_path.write <<~EOS
-          [#{e}]
-          #{extension_type}="#{e}.so"
-        EOS
-      end
-    end
   end
 
   def php_version
