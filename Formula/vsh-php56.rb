@@ -57,7 +57,6 @@ class VshPhp56 < Formula
 
   resource "xdebug_module" do
     url "https://github.com/xdebug/xdebug/archive/refs/tags/XDEBUG_2_5_5.tar.gz"
-    version "2.5.5"
     sha256 "77faf3bc49ca85d9b67ae2aa9d9cc4b017544f2566e918bf90fe23d68e044244"
   end
 
