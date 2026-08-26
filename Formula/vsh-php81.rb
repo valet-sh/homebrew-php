@@ -81,6 +81,8 @@ class VshPhp81 < Formula
     # Work around to support `icu4c` 75, which needs C++17.
     ENV["ICU_CXXFLAGS"] = "-std=c++17"
 
+    ENV.append "LDFLAGS", "-Wl,-headerpad_max_install_names"
+
     # buildconf required due to system library linking bug patch
     system "./buildconf", "--force"
 
