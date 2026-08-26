@@ -4,7 +4,7 @@ class VshPhp81 < Formula
   url "https://www.php.net/distributions/php-8.1.34.tar.xz"
   sha256 "ffa9e0982e82eeaea848f57687b425ed173aa278fe563001310ae2638db5c251"
   license "PHP-3.01"
-  revision 3
+  revision 4
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -137,7 +137,6 @@ class VshPhp81 < Formula
       --enable-ftp
       --enable-fpm
       --enable-gd
-      --enable-intl
       --enable-mbregex
       --enable-mbstring
       --enable-mysqlnd
