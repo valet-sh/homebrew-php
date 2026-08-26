@@ -7,7 +7,7 @@ class VshPhp85 < Formula
   license all_of: [
     "PHP-3.01",
   ]
-  revision 3
+  revision 4
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -116,6 +116,7 @@ class VshPhp85 < Formula
       --enable-mbregex
       --enable-mbstring
       --enable-mysqlnd
+      --enable-opcache
       --enable-pcntl
       --enable-phpdbg
       --enable-phpdbg-readline
