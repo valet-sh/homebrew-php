@@ -254,7 +254,7 @@ class VshPhp84 < Formula
     end
   end
 
-  def post_install
+  def post_install_steps
     # check if php extension dir (e.g. 20180731) exists and is not a symlink
     # only relevant when running "brew postinstall" manually
     if (lib/"#{name}/#{php_ext_dir}").exist? && !(lib/"#{name}/#{php_ext_dir}").symlink?

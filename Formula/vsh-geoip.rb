@@ -27,7 +27,7 @@ class VshGeoip < Formula
     system "make", "install"
   end
 
-  def post_install
+  def post_install_steps
     geoip_data = Pathname.new "#{var}/GeoIP"
     geoip_data.mkpath
 
