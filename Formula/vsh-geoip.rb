@@ -27,18 +27,22 @@ class VshGeoip < Formula
     system "make", "install"
   end
 
-  def post_install_steps
-    geoip_data = Pathname.new "#{var}/GeoIP"
-    geoip_data.mkpath
+  post_install_steps do
+    mkdir_p "{{var}}/GeoIP"
 
-    # Since default data directory moved, copy existing DBs
-    legacy_data = Pathname.new "#{HOMEBREW_PREFIX}/share/GeoIP"
-    cp Dir["#{legacy_data}/*"], geoip_data if legacy_data.exist?
+    # The data directory moved from share/GeoIP to var/GeoIP: carry over existing databases.
+    if_path_exists "{{HOMEBREW_PREFIX}}/share/GeoIP" do
+      run "/bin/cp", args: ["-R", "{{HOMEBREW_PREFIX}}/share/GeoIP/.", "{{var}}/GeoIP"]
+    end
 
-    full = Pathname.new "#{geoip_data}/GeoIP.dat"
-    ln_s "GeoLiteCountry.dat", full if !full.exist? && !full.symlink?
-    full = Pathname.new "#{geoip_data}/GeoIPCity.dat"
-    ln_s "GeoLiteCity.dat", full if !full.exist? && !full.symlink?
+    # Default database names expected by geoiplookup. A real file is left alone,
+    # a missing or dangling link is (re)created.
+    unless_path_exists "{{var}}/GeoIP/GeoIP.dat" do
+      symlink "{{var}}/GeoIP/GeoLiteCountry.dat", "{{var}}/GeoIP/GeoIP.dat", overwrite: true
+    end
+    unless_path_exists "{{var}}/GeoIP/GeoIPCity.dat" do
+      symlink "{{var}}/GeoIP/GeoLiteCity.dat", "{{var}}/GeoIP/GeoIPCity.dat", overwrite: true
+    end
   end
 
   test do

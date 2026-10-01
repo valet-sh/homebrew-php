@@ -248,67 +248,38 @@ class VshPhp82 < Formula
     end
   end
 
-  def post_install_steps
-    # check if php extension dir (e.g. 20180731) exists and is not a symlink
-    # only relevant when running "brew postinstall" manually
-    if (lib/"#{name}/#{php_ext_dir}").exist? && !(lib/"#{name}/#{php_ext_dir}").symlink?
-      (var/"#{name}/#{php_ext_dir}").mkpath unless (var/"#{name}/#{php_ext_dir}").exist?
-
-      Dir.glob(lib/"#{name}/#{php_ext_dir}/*") do |php_module|
-        php_module_name = File.basename(php_module)
-        mv php_module.to_s, var/"#{name}/#{php_ext_dir}/#{php_module_name}"
-      end
-
-      rm_r lib/"#{name}/#{php_ext_dir}"
-      ln_s var/"#{name}/#{php_ext_dir}", lib/"#{name}/#{php_ext_dir}"
+  post_install_steps do
+    # Keep shared extensions in var so they survive upgrades: move the keg's
+    # extension dir there and leave a symlink in its place. The symlink from an
+    # earlier run is removed first so these steps stay idempotent.
+    mkdir_p "{{var}}/{{name}}/20220829"
+    remove "{{lib}}/{{name}}/20220829", symlink_target_contains: "/var/vsh-php82/20220829"
+    if_path_exists "{{lib}}/{{name}}/20220829" do
+      move_contents "{{lib}}/{{name}}/20220829", "{{var}}/{{name}}/20220829"
+      remove "{{lib}}/{{name}}/20220829", recursive: true
     end
+    symlink "{{var}}/{{name}}/20220829", "{{lib}}/{{name}}/20220829"
 
-    pear_prefix = pkgshare/"pear"
+    # pear ships its registry without read access for group/other
+    set_permissions "{{pkgshare}}/pear/.channels", "u=rwX,go=rX"
+    set_permissions ["{{pkgshare}}/pear/.depdblock", "{{pkgshare}}/pear/.filemap"], "0644", recursive: false
+    set_permissions ["{{pkgshare}}/pear/.depdb", "{{pkgshare}}/pear/.lock"], "0644", recursive: false
 
-    puts pear_prefix
+    run "{{bin}}/pear{{version.major_minor}}", args: ["config-set", "php_ini", "{{pkgetc}}/php.ini", "system"]
+    run "{{bin}}/pear{{version.major_minor}}", args: ["update-channels"], network_access: true
 
-    pear_files = %W[
-      #{pear_prefix}/.depdblock
-      #{pear_prefix}/.filemap
-      #{pear_prefix}/.depdb
-      #{pear_prefix}/.lock
-    ]
-
-    %W[
-      #{pear_prefix}/.channels
-      #{pear_prefix}/.channels/.alias
-    ].each do |f|
-      chmod 0755, f
-      pear_files.concat(Dir["#{f}/*"])
-    end
-
-    chmod 0644, pear_files
-
-    {
-      "php_ini" => etc/"#{name}/php.ini",
-    }.each do |key, value|
-      value.mkpath if /(?<!bin|man)_dir$/.match?(key)
-      system bin/"pear#{bin_suffix}", "config-set", key, value, "system"
-    end
-
-    system bin/"pear#{bin_suffix}", "update-channels"
-
-    %w[
-      intl
-      opcache
-    ].each do |e|
-      ext_config_path = etc/"#{name}/conf.d/ext-#{e}.ini"
-      extension_type = (e == "opcache") ? "zend_extension" : "extension"
-      if ext_config_path.exist?
-        inreplace ext_config_path,
-          /#{extension_type}=.*$/, "#{extension_type}=#{e}.so"
-      else
-        ext_config_path.write <<~EOS
-          [#{e}]
-          #{extension_type}="#{e}.so"
-        EOS
-      end
-    end
+    # Register shared extensions. Existing files are kept and only the
+    # extension line is normalised.
+    write_file "{{pkgetc}}/conf.d/ext-intl.ini", <<~INI, overwrite: false
+      [intl]
+      extension=intl.so
+    INI
+    inreplace "{{pkgetc}}/conf.d/ext-intl.ini", /extension=.*$/, "extension=intl.so"
+    write_file "{{pkgetc}}/conf.d/ext-opcache.ini", <<~INI, overwrite: false
+      [opcache]
+      zend_extension=opcache.so
+    INI
+    inreplace "{{pkgetc}}/conf.d/ext-opcache.ini", /zend_extension=.*$/, "zend_extension=opcache.so"
   end
 
   def php_version
@@ -317,11 +288,6 @@ class VshPhp82 < Formula
 
   def bin_suffix
     php_version.to_s
-  end
-
-  def php_ext_dir
-    extension_dir = Utils.safe_popen_read("#{bin}/php-config#{bin_suffix}", "--extension-dir").chomp
-    File.basename(extension_dir)
   end
 
   service do

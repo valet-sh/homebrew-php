@@ -229,49 +229,25 @@ class VshPhp85 < Formula
     mv "#{bin}/peardev", "#{bin}/peardev#{bin_suffix}"
   end
 
-  def post_install_steps
-    # check if php extension dir (e.g. 20180731) exists and is not a symlink
-    # only relevant when running "brew postinstall" manually
-    if (lib/"#{name}/#{php_ext_dir}").exist? && !(lib/"#{name}/#{php_ext_dir}").symlink?
-      (var/"#{name}/#{php_ext_dir}").mkpath unless (var/"#{name}/#{php_ext_dir}").exist?
-
-      Dir.glob(lib/"#{name}/#{php_ext_dir}/*") do |php_module|
-        php_module_name = File.basename(php_module)
-        mv php_module.to_s, var/"#{name}/#{php_ext_dir}/#{php_module_name}"
-      end
-
-      rm_r lib/"#{name}/#{php_ext_dir}"
-      ln_s var/"#{name}/#{php_ext_dir}", lib/"#{name}/#{php_ext_dir}"
+  post_install_steps do
+    # Keep shared extensions in var so they survive upgrades: move the keg's
+    # extension dir there and leave a symlink in its place. The symlink from an
+    # earlier run is removed first so these steps stay idempotent.
+    mkdir_p "{{var}}/{{name}}/20250925"
+    remove "{{lib}}/{{name}}/20250925", symlink_target_contains: "/var/vsh-php85/20250925"
+    if_path_exists "{{lib}}/{{name}}/20250925" do
+      move_contents "{{lib}}/{{name}}/20250925", "{{var}}/{{name}}/20250925"
+      remove "{{lib}}/{{name}}/20250925", recursive: true
     end
-    pear_prefix = pkgshare/"pear"
+    symlink "{{var}}/{{name}}/20250925", "{{lib}}/{{name}}/20250925"
 
-    puts pear_prefix
+    # pear ships its registry without read access for group/other
+    set_permissions "{{pkgshare}}/pear/.channels", "u=rwX,go=rX"
+    set_permissions ["{{pkgshare}}/pear/.depdblock", "{{pkgshare}}/pear/.filemap"], "0644", recursive: false
+    set_permissions ["{{pkgshare}}/pear/.depdb", "{{pkgshare}}/pear/.lock"], "0644", recursive: false
 
-    pear_files = %W[
-      #{pear_prefix}/.depdblock
-      #{pear_prefix}/.filemap
-      #{pear_prefix}/.depdb
-      #{pear_prefix}/.lock
-    ]
-
-    %W[
-      #{pear_prefix}/.channels
-      #{pear_prefix}/.channels/.alias
-    ].each do |f|
-      chmod 0755, f
-      pear_files.concat(Dir["#{f}/*"])
-    end
-
-    chmod 0644, pear_files
-
-    {
-      "php_ini" => etc/"#{name}/php.ini",
-    }.each do |key, value|
-      value.mkpath if /(?<!bin|man)_dir$/.match?(key)
-      system bin/"pear#{bin_suffix}", "config-set", key, value, "system"
-    end
-
-    system bin/"pear#{bin_suffix}", "update-channels"
+    run "{{bin}}/pear{{version.major_minor}}", args: ["config-set", "php_ini", "{{pkgetc}}/php.ini", "system"]
+    run "{{bin}}/pear{{version.major_minor}}", args: ["update-channels"], network_access: true
   end
 
   def php_version
@@ -280,11 +256,6 @@ class VshPhp85 < Formula
 
   def bin_suffix
     php_version.to_s
-  end
-
-  def php_ext_dir
-    extension_dir = Utils.safe_popen_read("#{bin}/php-config#{bin_suffix}", "--extension-dir").chomp
-    File.basename(extension_dir)
   end
 
   service do
