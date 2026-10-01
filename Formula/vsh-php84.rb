@@ -84,7 +84,7 @@ class VshPhp84 < Formula
     # system pkg-config missing
     ENV["KERBEROS_CFLAGS"] = " "
     if OS.mac?
-      ENV["SASL_CFLAGS"] = "-I#{MacOS.sdk_path_if_needed}/usr/include/sasl"
+      ENV["SASL_CFLAGS"] = "-I#{MacOS.sdk_path}/usr/include/sasl"
       ENV["SASL_LIBS"] = "-lsasl2"
     else
       ENV["SQLITE_CFLAGS"] = "-I#{formula_opt_include("sqlite")}"
@@ -94,7 +94,7 @@ class VshPhp84 < Formula
 
     # Each extension that is built on Mojave needs a direct reference to the
     # sdk path or it won't find the headers
-    headers_path = "=#{MacOS.sdk_path_if_needed}/usr" if OS.mac?
+    headers_path = "=#{MacOS.sdk_path}/usr" if OS.mac?
 
     # `_www` only exists on macOS.
     fpm_user = OS.mac? ? "_www" : "www-data"
@@ -175,7 +175,7 @@ class VshPhp84 < Formula
     if OS.mac?
       args << "--enable-dtrace"
       args << "--with-ldap-sasl"
-      args << "--with-os-sdkpath=#{MacOS.sdk_path_if_needed}"
+      args << "--with-os-sdkpath=#{MacOS.sdk_path}"
     else
       args << "--disable-dtrace"
       args << "--without-ldap-sasl"

@@ -99,7 +99,7 @@ class VshPhp71 < Formula
 
     # Each extension that is built on Mojave needs a direct reference to the
     # sdk path or it won't find the headers
-    headers_path = "=#{MacOS.sdk_path_if_needed}/usr"
+    headers_path = "=#{MacOS.sdk_path}/usr"
 
     # `_www` only exists on macOS.
     fpm_user = OS.mac? ? "_www" : "www-data"

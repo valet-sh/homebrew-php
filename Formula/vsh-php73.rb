@@ -100,7 +100,7 @@ class VshPhp73 < Formula
 
     # Each extension that is built on Mojave needs a direct reference to the
     # sdk path or it won't find the headers
-    headers_path = "=#{MacOS.sdk_path_if_needed}/usr"
+    headers_path = "=#{MacOS.sdk_path}/usr"
 
     ENV["EXTENSION_DIR"] = "#{prefix}/lib/#{name}/20180731"
     ENV["PHP_PEAR_PHP_BIN"] = "#{bin}/php#{bin_suffix}"
