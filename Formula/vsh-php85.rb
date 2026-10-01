@@ -7,7 +7,7 @@ class VshPhp85 < Formula
   license all_of: [
     "PHP-3.01",
   ]
-  revision 4
+  revision 5
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -218,6 +218,12 @@ class VshPhp85 < Formula
       rm dst_default if dst_default.exist?
     end
     config_path.install config_files
+
+    # Create the ini scan dir (--with-config-file-scan-dir). Nothing is written
+    # into it anymore (intl/opcache are built statically), so add a .keep file
+    # to make sure the otherwise empty directory ends up in the bottle.
+    (config_path/"conf.d").mkpath
+    touch config_path/"conf.d/.keep"
 
     unless (var/"log/php-fpm#{bin_suffix}.log").exist?
       (var/"log").mkpath
