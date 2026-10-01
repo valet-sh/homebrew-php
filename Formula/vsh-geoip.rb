@@ -9,9 +9,8 @@ class VshGeoip < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 cellar: :any,                 arm64_tahoe:  "0a554d6d4c197408fc8277fd276ed59183e037896f308939f2155f2807d49a45"
-    sha256 cellar: :any,                 sequoia:      "a7da3793ae72d2527e140791ff3edfbd53015d2e40a18be9b5f098dc0de4a630"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "bb7b16a8c7e7b7ca574cf5c7cf733e15e45efc1e9feff0d70f3bd707f785ac4b"
+    rebuild 1
+    sha256 cellar: :any, arm64_tahoe: "dde0af4f1c8f041404ba15ac199391e280d82aecd60562df03dcbdff309f8fa7"
   end
 
   resource "database" do
