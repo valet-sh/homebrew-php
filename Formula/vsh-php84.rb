@@ -2,11 +2,11 @@ class VshPhp84 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
   # Should only be updated if the new version is announced on the homepage, https://www.php.net/
-  url "https://www.php.net/distributions/php-8.4.17.tar.xz"
-  mirror "https://fossies.org/linux/www/php-8.4.17.tar.xz"
-  sha256 "28b234e347286158cae921d61283eb1169d89bc9d2e5f5976567260ff38b0bfa"
+  url "https://www.php.net/distributions/php-8.4.27.tar.xz"
+  mirror "https://fossies.org/linux/www/php-8.4.27.tar.xz"
+  sha256 "dcf93923b0e38e0d5252b25b796520b5a47761a08b3488b6d0b5d1115764d3f0"
   license "PHP-3.01"
-  revision 4
+  # revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
