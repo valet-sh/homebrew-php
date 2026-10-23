@@ -1,10 +1,11 @@
 class VshPhp81 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
-  url "https://www.php.net/distributions/php-8.1.34.tar.xz"
-  sha256 "ffa9e0982e82eeaea848f57687b425ed173aa278fe563001310ae2638db5c251"
+  url "https://github.com/shivammathur/php-src-backports/archive/6fe2f0f6ccaeecd47dfc40513296097dee722d44.tar.gz"
+  version "8.1.34"
+  sha256 "558e79567d4c910b009f757984a3a07a440ad5aa56c0df0edd6c51484c5b5594"
   license "PHP-3.01"
-  revision 4
+  revision 5
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -12,7 +13,9 @@ class VshPhp81 < Formula
     sha256 arm64_tahoe: "8407c41c9c2cbb360a49b536a484aebecf03db590902d33a6bea5b133fc9e9c9"
   end
 
+  depends_on "bison" => :build
   depends_on "pkgconf" => :build
+  depends_on "re2c" => :build
   depends_on "apr"
   depends_on "apr-util"
   depends_on "argon2"
@@ -29,7 +32,6 @@ class VshPhp81 < Formula
   depends_on "imagemagick"
   depends_on "jpeg"
   depends_on "krb5"
-  depends_on "krb5"
   depends_on "libffi"
   depends_on "libpng"
   depends_on "libpq"
@@ -38,7 +40,7 @@ class VshPhp81 < Formula
   depends_on "libzip"
   depends_on "oniguruma"
   depends_on "openldap"
-  depends_on "openssl@3"
+  depends_on "openssl@4"
   depends_on "pcre2"
   depends_on "sqlite"
   depends_on "tidy-html5"
@@ -70,15 +72,7 @@ class VshPhp81 < Formula
     sha256 "a964e54a441392577f195d91da56e0b3cf30c32e6d60d0531a355b37bb1e1a59"
   end
 
-  patch :DATA
-
   def install
-    # Backport fix for libxml2 >= 2.13
-    # Ref: https://github.com/php/php-src/commit/67259e451d5d58b4842776c5696a66d74e157609
-    inreplace "ext/xml/compat.c",
-              "!= XML_PARSER_ENTITY_VALUE && parser->parser->instate != XML_PARSER_ATTRIBUTE_VALUE)",
-              "== XML_PARSER_CONTENT)"
-
     # Work around to support `icu4c` 75, which needs C++17.
     ENV["ICU_CXXFLAGS"] = "-std=c++17"
 
@@ -86,9 +80,6 @@ class VshPhp81 < Formula
 
     # buildconf required due to system library linking bug patch
     system "./buildconf", "--force"
-
-    # cURL needs the value to be long,
-    inreplace "ext/curl/interface.c", /CURLOPT_VERBOSE,\s+0/, "CURLOPT_VERBOSE, 0L"
 
     config_path = etc/name.to_s
     # Prevent system pear config from inhibiting pear install
@@ -235,7 +226,7 @@ class VshPhp81 < Formula
     end
 
     # Use OpenSSL cert bundle
-    openssl = Formula["openssl@3"]
+    openssl = Formula["openssl@4"]
     %w[development production].each do |mode|
       inreplace "php.ini-#{mode}", /; ?openssl\.cafile=/,
         "openssl.cafile = \"#{openssl.pkgetc}/cert.pem\""
@@ -345,27 +336,3 @@ class VshPhp81 < Formula
       "SNMP extension doesn't work reliably with Homebrew on High Sierra")
   end
 end
-
-__END__
-diff --git a/Zend/zend_execute_API.c b/Zend/zend_execute_API.c
-index 1e31934f..49d430c4 100644
---- a/Zend/zend_execute_API.c
-+++ b/Zend/zend_execute_API.c
-@@ -1477,7 +1477,7 @@ static void zend_set_timeout_ex(zend_long seconds, bool reset_signals) /* {{{ */
- 			t_r.it_value.tv_sec = seconds;
- 			t_r.it_value.tv_usec = t_r.it_interval.tv_sec = t_r.it_interval.tv_usec = 0;
-
--# if defined(__CYGWIN__) || defined(__PASE__)
-+# if defined(__CYGWIN__) || defined(__PASE__) || (defined(__aarch64__) && defined(__APPLE__))
- 			setitimer(ITIMER_REAL, &t_r, NULL);
- 		}
- 		signo = SIGALRM;
-@@ -1541,7 +1541,7 @@ void zend_unset_timeout(void) /* {{{ */
-
- 		no_timeout.it_value.tv_sec = no_timeout.it_value.tv_usec = no_timeout.it_interval.tv_sec = no_timeout.it_interval.tv_usec = 0;
-
--# if defined(__CYGWIN__) || defined(__PASE__)
-+# if defined(__CYGWIN__) || defined(__PASE__) || (defined(__aarch64__) && defined(__APPLE__))
- 		setitimer(ITIMER_REAL, &no_timeout, NULL);
- # else
- 		setitimer(ITIMER_PROF, &no_timeout, NULL);
