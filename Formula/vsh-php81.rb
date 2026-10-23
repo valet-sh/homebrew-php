@@ -32,7 +32,6 @@ class VshPhp81 < Formula
   depends_on "imagemagick"
   depends_on "jpeg"
   depends_on "krb5"
-  depends_on "krb5"
   depends_on "libffi"
   depends_on "libpng"
   depends_on "libpq"
