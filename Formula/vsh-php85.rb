@@ -2,12 +2,11 @@ class VshPhp85 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
   # Should only be updated if the new version is announced on the homepage, https://www.php.net/
-  url "https://www.php.net/distributions/php-8.5.1.tar.xz"
-  sha256 "3f5bf99ce81201f526d25e288eddb2cfa111d068950d1e9a869530054ff98815"
+  url "https://www.php.net/distributions/php-8.5.12.tar.xz"
+  sha256 "08bc2eba2a588654ade1357174aa646b761556c862dda0678345ee29ed481209"
   license all_of: [
     "PHP-3.01",
   ]
-  revision 5
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -35,7 +34,7 @@ class VshPhp85 < Formula
   depends_on "net-snmp"
   depends_on "oniguruma"
   depends_on "openldap"
-  depends_on "openssl@3"
+  depends_on "openssl@4"
   depends_on "pcre2"
   depends_on "sqlite"
   depends_on "tidy-html5"
@@ -196,7 +195,7 @@ class VshPhp85 < Formula
     end
 
     # Use OpenSSL cert bundle
-    openssl = Formula["openssl@3"]
+    openssl = Formula["openssl@4"]
     %w[development production].each do |mode|
       inreplace "php.ini-#{mode}", /; ?openssl\.cafile=/,
         "openssl.cafile = \"#{openssl.pkgetc}/cert.pem\""
