@@ -1,10 +1,9 @@
 class VshPhp82 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
-  url "https://www.php.net/distributions/php-8.2.30.tar.xz"
-  sha256 "bc90523e17af4db46157e75d0c9ef0b9d0030b0514e62c26ba7b513b8c4eb015"
+  url "https://www.php.net/distributions/php-8.2.35.tar.xz"
+  sha256 "5737b98601fe5ab1b8c5db0c82ed3158acb9283ed3081ffe2faffb9ac81455e6"
   license "PHP-3.01"
-  revision 3
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -32,7 +31,7 @@ class VshPhp82 < Formula
   depends_on "libzip"
   depends_on "oniguruma"
   depends_on "openldap"
-  depends_on "openssl@3"
+  depends_on "openssl@4"
   depends_on "pcre2"
   depends_on "sqlite"
   depends_on "tidy-html5"
@@ -205,7 +204,7 @@ class VshPhp82 < Formula
     end
 
     # Use OpenSSL cert bundle
-    openssl = Formula["openssl@3"]
+    openssl = Formula["openssl@4"]
     %w[development production].each do |mode|
       inreplace "php.ini-#{mode}", /; ?openssl\.cafile=/,
         "openssl.cafile = \"#{openssl.pkgetc}/cert.pem\""
