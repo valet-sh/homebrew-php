@@ -1,0 +1,297 @@
+class VshPhp86 < Formula
+  desc "General-purpose scripting language"
+  homepage "https://www.php.net/"
+  # PHP 8.6 is not released yet. Until then this tracks the php-src master
+  # snapshot that shivammathur/homebrew-php pins for php@8.6; bump the commit,
+  # sha256 and revision together with that formula.
+  url "https://github.com/php/php-src/archive/30999ac58ee78d3bd677abc7bd25a1a8bab21262.tar.gz?commit=30999ac58ee78d3bd677abc7bd25a1a8bab21262"
+  version "8.6.0"
+  sha256 "b96738b46756bfb9cc1424d0e40d26d9c02cdc1232a1dd2c8b66b5efa80f6d0c"
+  license all_of: [
+    "PHP-3.01",
+  ]
+
+  depends_on "bison" => :build
+  depends_on "pkgconf" => :build
+  depends_on "re2c" => :build
+  depends_on "apr"
+  depends_on "apr-util"
+  depends_on "argon2"
+  depends_on "autoconf"
+  depends_on "capstone"
+  depends_on "curl"
+  depends_on "freetds"
+  depends_on "gd"
+  depends_on "gettext"
+  depends_on "gmp"
+  depends_on "icu4c@78"
+  depends_on "imagemagick"
+  depends_on "libpq"
+  depends_on "libsodium"
+  depends_on "libzip"
+  depends_on "net-snmp"
+  depends_on "oniguruma"
+  depends_on "openldap"
+  depends_on "openssl@4"
+  depends_on "pcre2"
+  depends_on "sqlite"
+  depends_on "tidy-html5"
+  depends_on "unixodbc"
+  depends_on "webp"
+
+  uses_from_macos "cyrus-sasl" => :build
+  uses_from_macos "bzip2"
+  uses_from_macos "libedit"
+  uses_from_macos "libffi"
+  uses_from_macos "libxml2"
+  uses_from_macos "libxslt"
+  uses_from_macos "zlib"
+
+  # No Xdebug release supports PHP 8.6 yet, use the master snapshot that
+  # shivammathur/homebrew-extensions pins for xdebug@8.6 (3.6.0alpha2-dev).
+  resource "xdebug_module" do
+    url "https://github.com/xdebug/xdebug/archive/64007df3a0925808022fb87b6c6f06febf058ee2.tar.gz"
+    sha256 "375de81fecb552cc2c66768ddc510ff43cc267e2276dce17b9a2e52efc73a1f7"
+  end
+
+  resource "imagick_module" do
+    url "https://github.com/Imagick/imagick/archive/refs/tags/3.8.1.tar.gz"
+    sha256 "b0e9279ddf6e75a8c6b4068e16daec0475427dbca7ce2e144e30a51a88aa5ddc"
+  end
+
+  def install
+    # buildconf required due to system library linking bug patch
+    system "./buildconf", "--force"
+
+    inreplace "sapi/fpm/php-fpm.conf.in", ";daemonize = yes", "daemonize = no"
+
+    config_path = etc/name.to_s
+    # Prevent system pear config from inhibiting pear install
+    (config_path/"pear.conf").delete if (config_path/"pear.conf").exist?
+
+    # Prevent homebrew from hardcoding path to sed shim in phpize script
+    ENV["lt_cv_path_SED"] = "sed"
+    ENV["PHP_BUILD_PROVIDER"] = "valet.sh"
+
+    # system pkg-config missing
+    if OS.mac?
+      sdk_path = MacOS.sdk_for_formula(self).path
+      ENV["SASL_CFLAGS"] = "-I#{sdk_path}/usr/include/sasl"
+      ENV["SASL_LIBS"] = "-lsasl2"
+
+      # Each extension needs a direct reference to the sdk path or it won't find the headers
+      headers_path = "=#{sdk_path}/usr"
+      gettext_path = "=#{formula_opt_prefix("gettext")}"
+    else
+      ENV["BZIP_DIR"] = formula_opt_prefix("bzip2")
+    end
+
+    # `_www` only exists on macOS.
+    fpm_user = OS.mac? ? "_www" : "www-data"
+    fpm_group = OS.mac? ? "_www" : "www-data"
+
+    ENV["EXTENSION_DIR"] = "#{prefix}/lib/#{name}/20260924"
+    ENV["PHP_PEAR_PHP_BIN"] = "#{bin}/php#{bin_suffix}"
+
+    args = %W[
+      --prefix=#{prefix}
+      --localstatedir=#{var}
+      --sysconfdir=#{config_path}
+      --libdir=#{prefix}/lib/#{name}
+      --includedir=#{prefix}/include/#{name}
+      --datadir=#{prefix}/share/#{name}
+      --with-config-file-path=#{config_path}
+      --with-config-file-scan-dir=#{config_path}/conf.d
+      --program-suffix=#{bin_suffix}
+      --with-pear=#{pkgshare}/pear
+      --enable-bcmath
+      --enable-calendar
+      --enable-dba
+      --enable-exif
+      --enable-ftp
+      --enable-fpm
+      --enable-gd
+      --enable-intl
+      --enable-mbregex
+      --enable-mbstring
+      --enable-mysqlnd
+      --enable-pcntl
+      --enable-phpdbg
+      --enable-phpdbg-readline
+      --enable-shmop
+      --enable-soap
+      --enable-sockets
+      --enable-sysvmsg
+      --enable-sysvsem
+      --enable-sysvshm
+      --with-bz2#{headers_path}
+      --with-capstone
+      --with-curl
+      --with-external-gd
+      --with-external-pcre
+      --with-ffi
+      --with-fpm-user=#{fpm_user}
+      --with-fpm-group=#{fpm_group}
+      --with-gettext#{gettext_path}
+      --with-gmp=#{formula_opt_prefix("gmp")}
+      --with-iconv#{headers_path}
+      --with-layout=GNU
+      --with-ldap-sasl
+      --with-ldap=#{formula_opt_prefix("openldap")}
+      --with-libxml
+      --with-libedit
+      --with-mhash#{headers_path}
+      --with-mysql-sock=/tmp/mysql.sock
+      --with-mysqli=mysqlnd
+      --with-ndbm#{headers_path}
+      --with-openssl
+      --with-password-argon2
+      --with-pdo-dblib=#{formula_opt_prefix("freetds")}
+      --with-pdo-mysql=mysqlnd
+      --with-pdo-odbc=unixODBC,#{formula_opt_prefix("unixodbc")}
+      --with-pdo-pgsql=#{formula_opt_prefix("libpq")}
+      --with-pdo-sqlite
+      --with-pgsql=#{formula_opt_prefix("libpq")}
+      --enable-pic
+      --with-snmp=#{formula_opt_prefix("net-snmp")}
+      --with-sodium
+      --with-sqlite3
+      --with-tidy=#{formula_opt_prefix("tidy-html5")}
+      --with-unixODBC
+      --with-xsl
+      --with-zip
+      --with-zlib
+    ]
+
+    if OS.mac?
+      args << "--enable-dtrace"
+    else
+      args << "--disable-dtrace"
+      args << "--without-ndbm"
+      args << "--without-gdbm"
+    end
+
+    system "./configure", *args
+    system "make"
+    system "make", "install"
+
+    resource("xdebug_module").stage do
+      # INI_STR() no longer accepts a string literal on PHP 8.6
+      inreplace "src/develop/stack.c", "INI_STR((char*) ", "zend_ini_string_literal("
+      system "#{bin}/phpize#{bin_suffix}"
+      system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}"
+      system "make", "clean"
+      system "make", "all"
+      system "make", "install"
+    end
+
+    resource("imagick_module").stage do
+      args = %W[
+        --with-imagick=#{formula_opt_prefix("imagemagick")}
+      ]
+      # imagick 3.8.1 still uses APIs removed in PHP 8.6
+      inreplace "imagick.c", "ext/standard/php_smart_string.h", "Zend/zend_smart_string.h"
+      inreplace "imagick.c", "zend_exception_get_default(TSRMLS_C)", "zend_ce_exception"
+      inreplace %w[imagick.c imagick_helpers.c], "zval_dtor", "zval_ptr_dtor_nogc"
+      inreplace %w[imagick.c php_imagick_defs.h], "XtOffsetOf", "offsetof"
+      system "#{bin}/phpize#{bin_suffix}"
+      system "./configure", "--with-php-config=#{bin}/php-config#{bin_suffix}", *args
+      system "make", "clean"
+      system "make", "all"
+      system "make", "install"
+    end
+
+    # Use OpenSSL cert bundle
+    openssl = Formula["openssl@4"]
+    %w[development production].each do |mode|
+      inreplace "php.ini-#{mode}", /; ?openssl\.cafile=/,
+        "openssl.cafile = \"#{openssl.pkgetc}/cert.pem\""
+      inreplace "php.ini-#{mode}", /; ?openssl\.capath=/,
+        "openssl.capath = \"#{openssl.pkgetc}/certs\""
+    end
+
+    inreplace "sapi/fpm/www.conf" do |s|
+      s.gsub!(/listen =.*/, "listen = /tmp/#{name}.sock")
+    end
+
+    config_files = {
+      "php.ini-development"   => "php.ini",
+      "sapi/fpm/php-fpm.conf" => "php-fpm.conf",
+      "sapi/fpm/www.conf"     => "php-fpm.d/www.conf",
+    }
+    config_files.each_value do |dst|
+      dst_default = config_path/"#{dst}.default"
+      rm dst_default if dst_default.exist?
+    end
+    config_path.install config_files
+
+    # Create the ini scan dir (--with-config-file-scan-dir). Nothing is written
+    # into it anymore (intl/opcache are built statically), so add a .keep file
+    # to make sure the otherwise empty directory ends up in the bottle.
+    (config_path/"conf.d").mkpath
+    touch config_path/"conf.d/.keep"
+
+    unless (var/"log/php-fpm#{bin_suffix}.log").exist?
+      (var/"log").mkpath
+      touch var/"log/php-fpm#{bin_suffix}.log"
+    end
+
+    mv "#{bin}/pecl", "#{bin}/pecl#{bin_suffix}"
+    mv "#{bin}/pear", "#{bin}/pear#{bin_suffix}"
+    mv "#{bin}/peardev", "#{bin}/peardev#{bin_suffix}"
+  end
+
+  post_install_steps do
+    # Keep shared extensions in var so they survive upgrades: move the keg's
+    # extension dir there and leave a symlink in its place. The symlink from an
+    # earlier run is removed first so these steps stay idempotent.
+    mkdir_p "{{var}}/{{name}}/20260924"
+    remove "{{lib}}/{{name}}/20260924", symlink_target_contains: "/var/vsh-php86/20260924"
+    if_path_exists "{{lib}}/{{name}}/20260924" do
+      move_contents "{{lib}}/{{name}}/20260924", "{{var}}/{{name}}/20260924"
+      remove "{{lib}}/{{name}}/20260924", recursive: true
+    end
+    symlink "{{var}}/{{name}}/20260924", "{{lib}}/{{name}}/20260924"
+
+    # pear ships its registry without read access for group/other
+    set_permissions "{{pkgshare}}/pear/.channels", "u=rwX,go=rX"
+    set_permissions ["{{pkgshare}}/pear/.depdblock", "{{pkgshare}}/pear/.filemap"], "0644", recursive: false
+    set_permissions ["{{pkgshare}}/pear/.depdb", "{{pkgshare}}/pear/.lock"], "0644", recursive: false
+
+    run "{{bin}}/pear{{version.major_minor}}", args: ["config-set", "php_ini", "{{pkgetc}}/php.ini", "system"]
+    run "{{bin}}/pear{{version.major_minor}}", args: ["update-channels"], network_access: true
+  end
+
+  def php_version
+    version.to_s.split(".")[0..1].join(".")
+  end
+
+  def bin_suffix
+    php_version.to_s
+  end
+
+  service do
+    php_version = @formula.version.to_s.split(".")[0..1].join(".")
+    bin_suffix = php_version
+
+    run ["#{opt_sbin}/php-fpm#{bin_suffix}", "--nodaemonize"]
+    keep_alive true
+    working_dir var
+    error_log_path var/"log/vsh-php86.log"
+  end
+
+  test do
+    assert_match(/^Zend OPcache$/, shell_output("#{bin}/php#{bin_suffix} -i"),
+      "Zend OPCache extension not loaded")
+    # Test related to libxml2 and
+    # https://github.com/Homebrew/homebrew-core/issues/28398
+    assert_includes MachO::Tools.dylibs("#{bin}/php#{bin_suffix}"),
+      "#{formula_opt_lib("libpq")}/libpq.5.dylib"
+    system "#{sbin}/php-fpm#{bin_suffix}", "-t"
+    system "#{bin}/phpdbg#{bin_suffix}", "-V"
+    system "#{bin}/php-cgi#{bin_suffix}", "-m"
+    # Prevent SNMP extension to be added
+    refute_match(/^snmpx$/, shell_output("#{bin}/php#{bin_suffix} -m"),
+      "SNMP extension doesn't work reliably with Homebrew on High Sierra")
+  end
+end
