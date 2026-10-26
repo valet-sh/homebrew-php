@@ -7,7 +7,8 @@ class VshMcrypt < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 cellar: :any, arm64_tahoe: "a762d9765a94a559b2760142f6f1a3ffc06fef9af38ef92a6980de3c368c5d80"
+    sha256 cellar: :any, arm64_golden_gate: "0b1072b4bd066381a777b4f0bbba40afdcff50687502603021aba88575642891"
+    sha256 cellar: :any, arm64_tahoe:       "49e4cc6814ef5e24ac2ea8a18ebc621eb96d6a150fea5922441b19ca15fa4a67"
   end
 
   # Added automake as a build dependency to update config files in libmcrypt.
