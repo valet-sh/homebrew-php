@@ -11,6 +11,12 @@ class VshPhp86 < Formula
     "PHP-3.01",
   ]
 
+  bottle do
+    root_url "https://ghcr.io/v2/valet-sh/php"
+    sha256 arm64_golden_gate: "42daabede3487bb34b2783f0773dbe9503a2c1a478320063de7532d10a8b39db"
+    sha256 arm64_tahoe:       "3f21dfff4442678b77c3fa34be0783e166be1eab11a113a9fb0f96627208ce31"
+  end
+
   depends_on "bison" => :build
   depends_on "pkgconf" => :build
   depends_on "re2c" => :build
