@@ -1,11 +1,11 @@
 class VshPhp73 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
-  url "https://github.com/shivammathur/php-src-backports/archive/2c97539020cfaadf6998f23fd301cb5158464fbc.tar.gz"
+  url "https://github.com/shivammathur/php-src-backports/archive/34456d7558a6a1741fab48074c0c42d89b4834ac.tar.gz"
   version "7.3.33"
-  sha256 "c9bc90d6c3d7b2d3a9e17581d36382f4db3e20e3e43225db5437c52e2f2de7bf"
+  sha256 "14d7086d3098273da345e1917ca44b6aee8f2f12db230ed09e03e5bfeaf5fab4"
   license "PHP-3.01"
-  revision 3
+  revision 4
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -40,7 +40,7 @@ class VshPhp73 < Formula
   depends_on "libyaml"
   depends_on "libzip"
   depends_on "openldap"
-  depends_on "openssl@3"
+  depends_on "openssl@4"
   depends_on "pcre2"
   depends_on "sqlite"
   depends_on "tidy-html5"
@@ -162,7 +162,7 @@ class VshPhp73 < Formula
       --with-mysql-sock=/tmp/mysql.sock
       --with-mysqli=mysqlnd
       --with-ndbm#{headers_path}
-      --with-openssl=#{formula_opt_prefix("openssl@3")}
+      --with-openssl=#{formula_opt_prefix("openssl@4")}
       --with-password-argon2=#{formula_opt_prefix("argon2")}
       --with-pdo-dblib=#{formula_opt_prefix("freetds")}
       --with-pdo-mysql=mysqlnd
@@ -214,7 +214,7 @@ class VshPhp73 < Formula
     end
 
     # Use OpenSSL cert bundle
-    openssl = Formula["openssl@3"]
+    openssl = Formula["openssl@4"]
     %w[development production].each do |mode|
       inreplace "php.ini-#{mode}", /; ?openssl\.cafile=/,
         "openssl.cafile = \"#{openssl.pkgetc}/cert.pem\""
