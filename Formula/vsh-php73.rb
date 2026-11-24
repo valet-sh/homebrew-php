@@ -1,11 +1,11 @@
 class VshPhp73 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
-  url "https://github.com/shivammathur/php-src-backports/archive/34456d7558a6a1741fab48074c0c42d89b4834ac.tar.gz"
+  url "https://github.com/shivammathur/php-src-backports/archive/d9d03c738686fd4939bcd3ac7d61afc0d2dd120a.tar.gz"
   version "7.3.33"
-  sha256 "14d7086d3098273da345e1917ca44b6aee8f2f12db230ed09e03e5bfeaf5fab4"
+  sha256 "594549b72e7a372608fc9c6c257cb49a3e887dc88e3f827e4145d5b345121a99"
   license "PHP-3.01"
-  revision 4
+  revision 5
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -28,7 +28,7 @@ class VshPhp73 < Formula
   depends_on "gettext"
   depends_on "glib"
   depends_on "gmp"
-  depends_on "icu4c@77"
+  depends_on "icu4c@79"
   depends_on "imagemagick"
   depends_on "jpeg"
   depends_on "krb5"
@@ -149,7 +149,7 @@ class VshPhp73 < Formula
       --with-gettext=#{formula_opt_prefix("gettext")}
       --with-gmp=#{formula_opt_prefix("gmp")}
       --with-iconv#{headers_path}
-      --with-icu-dir=#{formula_opt_prefix("icu4c@77")}
+      --with-icu-dir=#{formula_opt_prefix("icu4c@79")}
       --with-jpeg-dir=#{formula_opt_prefix("jpeg")}
       --with-kerberos#{headers_path}
       --with-layout=GNU
