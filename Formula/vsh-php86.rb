@@ -268,12 +268,8 @@ class VshPhp86 < Formula
     run "{{bin}}/pear{{version.major_minor}}", args: ["update-channels"], network_access: true
   end
 
-  def php_version
-    version.to_s.split(".")[0..1].join(".")
-  end
-
   def bin_suffix
-    php_version.to_s
+    version.to_s.split(".")[0..1].join(".")
   end
 
   service do
