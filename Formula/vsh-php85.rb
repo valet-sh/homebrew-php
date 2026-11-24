@@ -2,8 +2,8 @@ class VshPhp85 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
   # Should only be updated if the new version is announced on the homepage, https://www.php.net/
-  url "https://www.php.net/distributions/php-8.5.12.tar.xz"
-  sha256 "08bc2eba2a588654ade1357174aa646b761556c862dda0678345ee29ed481209"
+  url "https://www.php.net/distributions/php-8.5.13.tar.xz"
+  sha256 "607602acaf0c3061818e9916ec44a058e8b3d43959a83862b9cd3ec7bf5b785f"
   license all_of: [
     "PHP-3.01",
   ]
@@ -27,7 +27,7 @@ class VshPhp85 < Formula
   depends_on "gd"
   depends_on "gettext"
   depends_on "gmp"
-  depends_on "icu4c@78"
+  depends_on "icu4c@79"
   depends_on "imagemagick"
   depends_on "libpq"
   depends_on "libsodium"
