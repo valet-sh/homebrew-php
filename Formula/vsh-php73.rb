@@ -194,7 +194,8 @@ class VshPhp73 < Formula
       system "make", "clean"
       system "make", "all"
 
-      mv "modules/xdebug.so", "#{php_ext_path}/xdebug2.so"
+      ext_dir = Utils.safe_popen_read("#{bin}/php-config#{bin_suffix}", "--extension-dir").chomp
+      mv "modules/xdebug.so", "#{ext_dir}/xdebug2.so"
     end
 
     resource("xdebug_module").stage do
@@ -288,16 +289,8 @@ class VshPhp73 < Formula
     inreplace "{{pkgetc}}/conf.d/ext-opcache.ini", /zend_extension=.*$/, "zend_extension=opcache.so"
   end
 
-  def php_version
-    version.to_s.split(".")[0..1].join(".")
-  end
-
   def bin_suffix
-    php_version.to_s
-  end
-
-  def php_ext_path
-    Utils.safe_popen_read("#{bin}/php-config#{bin_suffix}", "--extension-dir").chomp
+    version.to_s.split(".")[0..1].join(".")
   end
 
   service do
