@@ -1,15 +1,14 @@
 class VshPhp86 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
-  # PHP 8.6 is not released yet. Until then this tracks the php-src master
-  # snapshot that shivammathur/homebrew-php pins for php@8.6; bump the commit,
-  # sha256 and revision together with that formula.
-  url "https://github.com/php/php-src/archive/30999ac58ee78d3bd677abc7bd25a1a8bab21262.tar.gz?commit=30999ac58ee78d3bd677abc7bd25a1a8bab21262"
-  version "8.6.0"
-  sha256 "b96738b46756bfb9cc1424d0e40d26d9c02cdc1232a1dd2c8b66b5efa80f6d0c"
+  # Should only be updated if the new version is announced on the homepage, https://www.php.net/
+  url "https://www.php.net/distributions/php-8.6.0.tar.xz"
+  mirror "https://fossies.org/linux/www/php-8.6.0.tar.xz"
+  sha256 "5f84beaa3d763aee1e4feed99bf54ec692c383b322e25626807b589238c3a087"
   license all_of: [
     "PHP-3.01",
   ]
+  revision 1
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -30,7 +29,7 @@ class VshPhp86 < Formula
   depends_on "gd"
   depends_on "gettext"
   depends_on "gmp"
-  depends_on "icu4c@78"
+  depends_on "icu4c@79"
   depends_on "imagemagick"
   depends_on "libpq"
   depends_on "libsodium"
@@ -56,8 +55,8 @@ class VshPhp86 < Formula
   # No Xdebug release supports PHP 8.6 yet, use the master snapshot that
   # shivammathur/homebrew-extensions pins for xdebug@8.6 (3.6.0alpha2-dev).
   resource "xdebug_module" do
-    url "https://github.com/xdebug/xdebug/archive/64007df3a0925808022fb87b6c6f06febf058ee2.tar.gz"
-    sha256 "375de81fecb552cc2c66768ddc510ff43cc267e2276dce17b9a2e52efc73a1f7"
+    url "https://github.com/xdebug/xdebug/archive/5e19866c1766e38c527f9f94faa170370dc4209f.tar.gz"
+    sha256 "a11d140cb67da8920df0a063c4d77b893b71b0195bb96f871c5f5915e0544ec8"
   end
 
   resource "imagick_module" do
@@ -96,7 +95,7 @@ class VshPhp86 < Formula
     fpm_user = OS.mac? ? "_www" : "www-data"
     fpm_group = OS.mac? ? "_www" : "www-data"
 
-    ENV["EXTENSION_DIR"] = "#{prefix}/lib/#{name}/20260924"
+    ENV["EXTENSION_DIR"] = "#{prefix}/lib/#{name}/20261112"
     ENV["PHP_PEAR_PHP_BIN"] = "#{bin}/php#{bin_suffix}"
 
     args = %W[
@@ -251,13 +250,13 @@ class VshPhp86 < Formula
     # Keep shared extensions in var so they survive upgrades: move the keg's
     # extension dir there and leave a symlink in its place. The symlink from an
     # earlier run is removed first so these steps stay idempotent.
-    mkdir_p "{{var}}/{{name}}/20260924"
-    remove "{{lib}}/{{name}}/20260924", symlink_target_contains: "/var/vsh-php86/20260924"
-    if_path_exists "{{lib}}/{{name}}/20260924" do
-      move_contents "{{lib}}/{{name}}/20260924", "{{var}}/{{name}}/20260924"
-      remove "{{lib}}/{{name}}/20260924", recursive: true
+    mkdir_p "{{var}}/{{name}}/20261112"
+    remove "{{lib}}/{{name}}/20261112", symlink_target_contains: "/var/vsh-php86/20261112"
+    if_path_exists "{{lib}}/{{name}}/20261112" do
+      move_contents "{{lib}}/{{name}}/20261112", "{{var}}/{{name}}/20261112"
+      remove "{{lib}}/{{name}}/20261112", recursive: true
     end
-    symlink "{{var}}/{{name}}/20260924", "{{lib}}/{{name}}/20260924"
+    symlink "{{var}}/{{name}}/20261112", "{{lib}}/{{name}}/20261112"
 
     # pear ships its registry without read access for group/other
     set_permissions "{{pkgshare}}/pear/.channels", "u=rwX,go=rX"
@@ -268,12 +267,8 @@ class VshPhp86 < Formula
     run "{{bin}}/pear{{version.major_minor}}", args: ["update-channels"], network_access: true
   end
 
-  def php_version
-    version.to_s.split(".")[0..1].join(".")
-  end
-
   def bin_suffix
-    php_version.to_s
+    version.to_s.split(".")[0..1].join(".")
   end
 
   service do
