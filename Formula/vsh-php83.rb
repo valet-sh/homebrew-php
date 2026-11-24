@@ -265,12 +265,8 @@ class VshPhp83 < Formula
     inreplace "{{pkgetc}}/conf.d/ext-opcache.ini", /zend_extension=.*$/, "zend_extension=opcache.so"
   end
 
-  def php_version
-    version.to_s.split(".")[0..1].join(".")
-  end
-
   def bin_suffix
-    php_version.to_s
+    version.to_s.split(".")[0..1].join(".")
   end
 
   service do
