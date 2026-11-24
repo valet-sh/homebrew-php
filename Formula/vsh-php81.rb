@@ -1,11 +1,11 @@
 class VshPhp81 < Formula
   desc "General-purpose scripting language"
   homepage "https://www.php.net/"
-  url "https://github.com/shivammathur/php-src-backports/archive/6fe2f0f6ccaeecd47dfc40513296097dee722d44.tar.gz"
+  url "https://github.com/shivammathur/php-src-backports/archive/8952a69b1fb08ece0a50eae8fbc123d6308aceab.tar.gz"
   version "8.1.34"
-  sha256 "558e79567d4c910b009f757984a3a07a440ad5aa56c0df0edd6c51484c5b5594"
+  sha256 "1a78f1054661289d4a712eefc410f6ace5c383975e9b22e2310dc7730491ca28"
   license "PHP-3.01"
-  revision 5
+  revision 6
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
@@ -28,7 +28,7 @@ class VshPhp81 < Formula
   depends_on "gettext"
   depends_on "glib"
   depends_on "gmp"
-  depends_on "icu4c@78"
+  depends_on "icu4c@79"
   depends_on "imagemagick"
   depends_on "jpeg"
   depends_on "krb5"
