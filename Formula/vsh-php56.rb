@@ -113,7 +113,8 @@ class VshPhp56 < Formula
     ENV["lt_cv_path_SED"] = "sed"
 
     # Each extension that is built on Mojave needs a direct reference to the sdk path or it won't find the headers
-    headers_path = "=#{MacOS.sdk_for_formula(self).path}/usr"
+    sdk_path = MacOS.sdk_for_formula(self).path
+    headers_path = "=#{sdk_path}/usr"
     gettext_path = "=#{formula_opt_prefix("gettext")}"
 
     # `_www` only exists on macOS.
@@ -301,12 +302,8 @@ class VshPhp56 < Formula
     inreplace "{{pkgetc}}/conf.d/ext-opcache.ini", /zend_extension=.*$/, "zend_extension=opcache.so"
   end
 
-  def php_version
-    version.to_s.split(".")[0..1].join(".")
-  end
-
   def bin_suffix
-    php_version.to_s
+    version.to_s.split(".")[0..1].join(".")
   end
 
   service do
