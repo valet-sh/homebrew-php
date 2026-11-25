@@ -10,8 +10,9 @@ class VshPhp85 < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/valet-sh/php"
-    sha256 arm64_golden_gate: "205ed5c13cf0c778464225e3b3a2d896f1ed1a79653b75f7f85de23261bde3b8"
-    sha256 arm64_tahoe:       "6a96fd5b91d1c4b4642b5098aea68a22855d92ef3ed6482a0ba4a18cd5641462"
+    manifest_sha256 "3ad4389c1e106ff597f741b68596830bfeb1f42df2070f5b2a91b85c8e2380d7"
+    sha256 arm64_golden_gate: "68715c3e9cc4510a2e77bbcd939840421561dbd18404ba8ae16fcbc90c787805"
+    sha256 arm64_tahoe:       "e8a5a6ac70eb043464aaef7c6e591fa9452c8911572705acb83f11a53ad0d55f"
   end
 
   depends_on "bison" => :build
